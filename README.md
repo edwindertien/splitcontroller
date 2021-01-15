@@ -15,4 +15,4 @@ Simple laser cut 'sandwich' plate box containing a severely stripped-down ps4 co
 # remote-modular ps4
 This directory contains an openSCAD script to generate a modular parametric hand-held controller using a standard PS4 joystick (replacement part) and two pushbuttons. For connectivity a flat (flexible) 6mm wide UTP cable has been used. Standard RJ45 plugs are used to connect these hand-helds to the arduino box. 
 
-![3D printed handheld](pictures/handheld.jpg?raw=true =300x "3D printed handheld")
+<img src="pictures/handheld.jpg" alt="3D printed handheld" width="200"/>
