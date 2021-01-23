@@ -53,6 +53,12 @@
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
+const enum Device{ NUNCHUCK, PS4CONTR};
+
+// Device is constant because the device won't change during use.
+const Device dv = PS4CONTR;
+
+// replace by ternary --> device enum
 #ifdef NUNCHUCK
   #include <Wire.h>
   #include "nunchuck_funcs.h"
@@ -94,6 +100,17 @@ m_ps4pins["l1button5"] = 50;   // L1   // button 5 // hoog actief
 m_ps4pins["optbutton"] =  52;  // options button
 m_ps4pins["shrebutton"] = A8;   // share
 
+std::map<std::string,uint8_t>::iterator it;
+
+/*
+std::map<char, int> m;
+m.insert(std::make_pair('c', 0));  // c is for cookie
+
+std::map<char, int>::iterator it = m.find('c');
+if (it != m.end())
+    it->second = 42;
+
+*/
 
 // is array
 int ps4pins[21] = {2, // Joystick R - X - axis 2
@@ -135,6 +152,7 @@ unsigned char Bbuffer[12];
 unsigned char Cbuffer[12];
 unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
+int Astate, Areleased, Bstate, Breleased;
 
 class Contr {
   public:
@@ -200,6 +218,9 @@ class Contr {
       rightRing.show();
 
     }
+    void readInput() {
+       //override by derived
+    }
 };
 
 class Nunchuckcontr : public Contr {
@@ -221,7 +242,7 @@ class Nunchuckcontr : public Contr {
     ~Nunchuckctr() {
 
     }
-
+    // setup function
     void init() {
       Wire.setClock(10000) ;
       pinMode(20, INPUT_PULLUP);
@@ -232,6 +253,7 @@ class Nunchuckcontr : public Contr {
       nunchuck_init();  // send the initilization handshake
     }
 
+    // setup function
     void selectNunchuckChannel(int channel) {
       if (channel == 1) channel = 5;
       else channel = 4;
@@ -239,6 +261,20 @@ class Nunchuckcontr : public Contr {
       Wire.beginTransmission(0b1110000);// transmit to device 0x52
       Wire.write(channel);// sends memory address
       Wire.endTransmission();// stop transmitting
+    }
+    // loop function
+    void readInput() {
+      // read both nunchucks
+      for (int n = 0; n < 2; n++) {
+        selectNunchuckChannel(n);
+        delay(10);
+        if (nunchuck_get_data()) {
+          accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+          accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+          c_button[n] = (int)nunchuck_cbutton();
+          z_button[n] = (int)nunchuck_zbutton();
+        }
+      }
     }
 
 };
@@ -260,55 +296,8 @@ class Modps4contr : public Contr {
   void init() {
 
   }
-};
 
-
-void setup() {
-#ifdef DEBUG
-  Serial.begin(115200);   // debug info to usb serial
-#endif
-  delay(20);        // wait for the nunchuck to be powered up
-// nunchuck init
-
-
-
-}
-// end setup
-
-
-#ifdef NUNCHUCK
-// using the PCA9540B 2-channel I2c mux, one of the channels can
-// be chosen for communication. On both a nunchuck has been attached
-void selectNunchuckChannel(int channel) {
-  if (channel == 1) channel = 5;
-  else channel = 4;
-  Wire.begin();                // join i2c bus as master
-  Wire.beginTransmission(0b1110000);// transmit to device 0x52
-  Wire.write(channel);// sends memory address
-  Wire.endTransmission();// stop transmitting
-}
-#endif
-
-
-int Astate, Areleased, Bstate, Breleased;
-
-
-void loop() {
-  if (millis() > loopTime + 19) { // run at 10 Hz
-    loopTime = millis();
-#ifdef NUNCHUCK
-    // read both nunchucks
-    for (int n = 0; n < 2; n++) {
-      selectNunchuckChannel(n);
-      delay(10);
-      if (nunchuck_get_data()) {
-        accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-        accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-        c_button[n] = (int)nunchuck_cbutton();
-        z_button[n] = (int)nunchuck_zbutton();
-      }
-    }
-#else
+  void readInput() {
     accx[0] = map(analogRead(A5), 0, 832, 0, 255);
     accy[0] = map(analogRead(A4), 0, 832, 0, 255);
     accx[1] = map(analogRead(A1), 0, 832, 0, 255);
@@ -317,12 +306,44 @@ void loop() {
     z_button[0] = !digitalRead(A7);
     c_button[1] = !digitalRead(A2);
     z_button[1] = !digitalRead(A3);
+  }
+};
+
+void setup() {
+#ifdef DEBUG
+  Serial.begin(115200);   // debug info to usb serial
 #endif
+  delay(20);        // wait for the nunchuck to be powered up
+
+  //(expression 1) ? expression 2 : expression 3
+  // new obj nunchuck contr : new obj ps4contr
+  (dv == NUNCHUCK) ? () : ();
+  // call init()
+
+} // end setup
+
+void loop() {
+  if (millis() > loopTime + 19) { // run at 10 Hz
+    loopTime = millis();
+
 
 ///////// LINKS - NUNCHUCK FUNCTIONS ////
 // GROEN
-    int directionA = -1;
+
+
+// links
+    switch(Astate) {
+      case 0: // groen
+
+        break;
+      case 1: // rood
+        break;
+      default: // blauw
+    }
+
+void lgroen() {}
     if (Astate == 0 ) {
+      int directionA = -1;
       analogWrite(3, accx[0]); // axis 1
       analogWrite(2, 255-accy[0]); // axis 2
       // visualisation
@@ -336,7 +357,9 @@ void loop() {
       }
       leftRing.show();
     }
+  }
 // ROOD
+void lrood() {
     else if (Astate == 1) {
       if (accx[0] > CENTER + MARGIN) {
         digitalWrite(52, LOW);  // options
@@ -376,6 +399,9 @@ void loop() {
       }
       leftRing.show();
     }
+  }
+
+  void lblauw() {
 // BLAUW:
     else {
       if (accx[0] > CENTER + MARGIN) {
@@ -418,6 +444,7 @@ void loop() {
       }
       leftRing.show();
     }
+  }
  /////////RECHTS////////////////////////////
  // GROEN
     int directionB = -1;
