@@ -1,5 +1,3 @@
-#include <ArduinoSTL.h>
-
 /*************************************************************
    Sketch for controlling a modified PS4 controller
    using two nunchucks or analog nunchuck equivalent
@@ -46,7 +44,7 @@
    6 GND (potentiometer)
    7 switch_1
    8 switch_2
-   
+
  **************************************************************/
 //#define NUNCHUCK (1)
 #define DEBUG (1)
@@ -55,20 +53,66 @@
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
-#ifdef NUNCHUCK
-#include <Wire.h>
-#include "nunchuck_funcs.h"
-#define NUNCHUCK_X_OFFSET 0
-#define NUNCHUCK_Y_OFFSET 0
-#define CENTER 127
-#define MARGIN 16
-#else
-#define CENTER 127
-#define MARGIN 50
-#endif
+const enum Device{ NUNCHUCK, PS4CONTR};
 
-#define MIN 5
-#define MAX 130
+// Device is constant because the device won't change during use.
+const Device dv = PS4CONTR;
+
+// replace by ternary --> device enum
+#ifdef NUNCHUCK
+  #include <Wire.h>
+  #include "nunchuck_funcs.h"
+
+//  #define CENTER 127
+//  #define MARGIN 16
+#else
+//  #define CENTER 127
+//  #define MARGIN 50
+#endif
+//#define MIN 5
+//#define MAX 130
+
+// num of pins on Arduino. Here: Arduino DUE
+const uint8_t numArduinoDigitPins = 54;
+const uint8_t numArduinoAnalogIn = 12;
+const uint8_t numArduinoAnalogOut = 2;
+
+std::map<std::string,uint8_t> m_ps4pins;
+m_ps4pins["joyRXax2"] = 2;     // Joystick R - X - axis 2
+m_ps4pins["joyRYax1"] = 3;     // Joystick R - Y - axis 1
+m_ps4pins["joyRZb11"] = 4;     // Joystick R - z - button 11 // hoog actief
+m_ps4pins["joyLZb12"] = 7;     // Joystick L - z - button 12 // hoog actief
+m_ps4pins["joyLYax4"] = 6;     // Joystick L - Y - axis 4
+m_ps4pins["joyLXax3"] = 5;     // Joystick L - X - axis 3
+m_ps4pins["sqbutton"] = 26;    // square button
+m_ps4pins["circbutton"] = 28;  // circle button
+m_ps4pins["psbutton"] = 30;    // PS
+m_ps4pins["l2button"] = 32;    // L2
+m_ps4pins["r2button"] = 34;    // R2
+m_ps4pins["tributton"] = 36;   // triangle button
+m_ps4pins["xbutton"] = 38;     // cross (X) button
+m_ps4pins["lhat"] = 40;        // left - hat
+m_ps4pins["rhat"] = 42;        // right - hat
+m_ps4pins["uhat"] = 44;        // up - hat
+m_ps4pins["dhat"] = 46;        // down - hat
+m_ps4pins["r1button6"] = 48;   // R1   // button 6 // hoog actief
+m_ps4pins["l1button5"] = 50;   // L1   // button 5 // hoog actief
+m_ps4pins["optbutton"] =  52;  // options button
+m_ps4pins["shrebutton"] = A8;   // share
+
+std::map<std::string,uint8_t>::iterator it;
+
+/*
+std::map<char, int> m;
+m.insert(std::make_pair('c', 0));  // c is for cookie
+
+std::map<char, int>::iterator it = m.find('c');
+if (it != m.end())
+    it->second = 42;
+
+*/
+
+// is array
 int ps4pins[21] = {2, // Joystick R - X - axis 2
                    3, // Joystick R - Y - axis 1
                    4, // Joystick R - z - button 11 // hoog actief
@@ -94,11 +138,13 @@ int ps4pins[21] = {2, // Joystick R - X - axis 2
 #define greenLED 13
 #define redLED 12
 unsigned long loopTime;
+/*
 // buffer for storing nunchuck or analog joystick data:
 unsigned char accx[2];
 unsigned char accy[2];
 unsigned char c_button[2];
 unsigned char z_button[2];
+*/
 
 // buffers for the coloured rings:
 unsigned char Abuffer[12];
@@ -106,88 +152,149 @@ unsigned char Bbuffer[12];
 unsigned char Cbuffer[12];
 unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
-void setup() {
-#ifdef DEBUG
-  Serial.begin(115200);   // debug info to usb serial
-#endif
-  delay(20);        // wait for the nunchuck to be powered up
-#ifdef NUNCHUCK
-  Wire.setClock(10000) ;
-  pinMode(20, INPUT_PULLUP);
-  pinMode(21, INPUT_PULLUP);
-  selectNunchuckChannel(0);
-  nunchuck_init();  // send the initilization handshake
-  selectNunchuckChannel(1);
-  nunchuck_init();  // send the initilization handshake
-#endif
-  pinMode(13, OUTPUT);
-  pinMode(9, OUTPUT);
-
-  for (int n = 0; n < 21; n++) {
-    pinMode(ps4pins[n], OUTPUT);
-    digitalWrite(ps4pins[n], HIGH);
-  }
-  digitalWrite(4, LOW); // hoog actief
-  digitalWrite(7, LOW); // hoog actief
-  digitalWrite(48, LOW);// hoog actief
-  digitalWrite(50, LOW);// hoog actief
-
-  analogWrite(2, 127);  // start with centervoltage
-  analogWrite(3, 127);
-  analogWrite(5, 127);
-  analogWrite(6, 127);
-
-  pinMode(A2, INPUT_PULLUP);  // for the switches.
-  pinMode(A3, INPUT_PULLUP);
-  pinMode(A6, INPUT_PULLUP);
-  pinMode(A7, INPUT_PULLUP);
-
-#ifdef DEBUG
-  Serial.println("started up");
-#endif
-  leftRing.begin();
-  rightRing.begin();
-  for (int i = 0; i < 12; i++) {
-    leftRing.setPixelColor(i, leftRing.Color(0, 0, 0));
-    rightRing.setPixelColor(i, leftRing.Color(0, 0, 0));
-    Abuffer[i] = MIN;
-    Bbuffer[i] = MIN;
-    Cbuffer[i] = MIN;
-    Dbuffer[i] = MIN;
-  }
-  leftRing.show();
-  rightRing.show();
-
-}
-#ifdef NUNCHUCK
-// using the PCA9540B 2-channel I2c mux, one of the channels can
-// be chosen for communication. On both a nunchuck has been attached
-void selectNunchuckChannel(int channel) {
-  if (channel == 1) channel = 5;
-  else channel = 4;
-  Wire.begin();                // join i2c bus as master
-  Wire.beginTransmission(0b1110000);// transmit to device 0x52
-  Wire.write(channel);// sends memory address
-  Wire.endTransmission();// stop transmitting
-}
-#endif
 int Astate, Areleased, Bstate, Breleased;
-void loop() {
-  if (millis() > loopTime + 19) { // run at 10 Hz
-    loopTime = millis();
-#ifdef NUNCHUCK
-    // read both nunchucks
-    for (int n = 0; n < 2; n++) {
-      selectNunchuckChannel(n);
-      delay(10);
-      if (nunchuck_get_data()) {
-        accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-        accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-        c_button[n] = (int)nunchuck_cbutton();
-        z_button[n] = (int)nunchuck_zbutton();
+
+class Contr {
+  public:
+    const uint8_t CENTER;
+    const uint8_t MARGIN;
+    const uint8_t MIN = 5;
+    const uint8_t MAX = 130;
+
+    // buffer for storing nunchuck or analog joystick data:
+    unsigned char accx[2];
+    unsigned char accy[2];
+    unsigned char c_button[2];
+    unsigned char z_button[2];
+
+    // default constructor
+    Contr() {
+      init();
+    }
+
+    // this one private? would make sense, except it is parent class
+    void init() {
+      pinMode(m_ps4pins["greenLED"], OUTPUT); // greenLED 13
+      pinMode(9, OUTPUT);
+
+      for (const auto& [key, pinnr] : m_ps4pins) {
+        pinMode(pinnr, OUTPUT);
+        digitalWrite(pinnr, HIGH);
+      }
+      //std::pair<std::string,uint8_t> writeDigLow[4] =   map find
+      // mymap['d']
+      digitalWrite(4, LOW); // hoog actief
+      digitalWrite(7, LOW); // hoog actief
+      digitalWrite(48, LOW);// hoog actief
+      digitalWrite(50, LOW);// hoog actief
+
+      analogWrite(2, 127);  // start with centervoltage
+      analogWrite(3, 127);
+      analogWrite(5, 127);
+      analogWrite(6, 127);
+
+      pinMode(A2, INPUT_PULLUP);  // for the switches.
+      pinMode(A3, INPUT_PULLUP);
+      pinMode(A6, INPUT_PULLUP);
+      pinMode(A7, INPUT_PULLUP);
+
+    #ifdef DEBUG
+      Serial.println("started up");
+    #endif
+      leftRing.begin();
+      rightRing.begin();
+      for (int i = 0; i < 12; i++) {
+        leftRing.setPixelColor(i, leftRing.Color(0, 0, 0));
+        rightRing.setPixelColor(i, leftRing.Color(0, 0, 0));
+        Abuffer[i] = MIN;
+        Bbuffer[i] = MIN;
+        Cbuffer[i] = MIN;
+        Dbuffer[i] = MIN;
+      }
+      leftRing.show();
+      rightRing.show();
+
+    }
+    void readInput() {
+       //override by derived
+    }
+};
+
+class Nunchuckcontr : public Contr {
+  private:
+    const uint8_t NUNCHUCK_X_OFFSET = 0;
+    const uint8_t NUNCHUCK_Y_OFFSET = 0;
+    //uint8_t pinLED;
+  public:
+      // make paramterized constructor
+    Nunchuckctr(uint8_t pinLED) {
+      CENTER = 127;
+      MARGIN = 16;
+      // constructor
+      //this->pinLED = pinLED;
+      //pinMode(pinLED, OUTPUT);
+    }
+
+  // destructor
+    ~Nunchuckctr() {
+
+    }
+    // setup function
+    void init() {
+      Wire.setClock(10000) ;
+      pinMode(20, INPUT_PULLUP);
+      pinMode(21, INPUT_PULLUP);
+      selectNunchuckChannel(0);
+      nunchuck_init();  // send the initilization handshake
+      selectNunchuckChannel(1);
+      nunchuck_init();  // send the initilization handshake
+    }
+
+    // setup function
+    void selectNunchuckChannel(int channel) {
+      if (channel == 1) channel = 5;
+      else channel = 4;
+      Wire.begin();                // join i2c bus as master
+      Wire.beginTransmission(0b1110000);// transmit to device 0x52
+      Wire.write(channel);// sends memory address
+      Wire.endTransmission();// stop transmitting
+    }
+    // loop function
+    void readInput() {
+      // read both nunchucks
+      for (int n = 0; n < 2; n++) {
+        selectNunchuckChannel(n);
+        delay(10);
+        if (nunchuck_get_data()) {
+          accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+          accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+          c_button[n] = (int)nunchuck_cbutton();
+          z_button[n] = (int)nunchuck_zbutton();
+        }
       }
     }
-#else
+
+};
+
+class Modps4contr : public Contr {
+  private:
+  public:
+
+  Modps4contr {
+    CENTER = 127;
+    MARGIN = 50;
+
+  }
+
+  ~Mmodps4contr {
+
+  }
+
+  void init() {
+
+  }
+
+  void readInput() {
     accx[0] = map(analogRead(A5), 0, 832, 0, 255);
     accy[0] = map(analogRead(A4), 0, 832, 0, 255);
     accx[1] = map(analogRead(A1), 0, 832, 0, 255);
@@ -196,26 +303,60 @@ void loop() {
     z_button[0] = !digitalRead(A7);
     c_button[1] = !digitalRead(A2);
     z_button[1] = !digitalRead(A3);
+  }
+};
+
+void setup() {
+#ifdef DEBUG
+  Serial.begin(115200);   // debug info to usb serial
 #endif
+  delay(20);        // wait for the nunchuck to be powered up
+
+  //(expression 1) ? expression 2 : expression 3
+  // new obj nunchuck contr : new obj ps4contr
+  (dv == NUNCHUCK) ? () : ();
+  // call init()
+
+} // end setup
+
+void loop() {
+  if (millis() > loopTime + 19) { // run at 10 Hz
+    loopTime = millis();
+
 
 ///////// LINKS - NUNCHUCK FUNCTIONS ////
 // GROEN
-    int directionA = -1;
+
+
+// links
+    switch(Astate) {
+      case 0: // groen
+
+        break;
+      case 1: // rood
+        break;
+      default: // blauw
+    }
+
+void lgroen() {}
     if (Astate == 0 ) {
+      int directionA = -1;
       analogWrite(3, accx[0]); // axis 1
       analogWrite(2, 255-accy[0]); // axis 2
       // visualisation
       if (accx[0] > CENTER + MARGIN || accx[0] < CENTER - MARGIN || accy[0] > CENTER + MARGIN || accy[0] < CENTER - MARGIN)directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415)); else directionA = -1;
 
       if (z_button[0]) digitalWrite(38, LOW); else digitalWrite(38, HIGH); // (X)
-      
+
       for (int i = 0; i < 12; i++) {
         leftRing.setPixelColor(i, leftRing.Color(0, MIN, 0));
         if (i == directionA)leftRing.setPixelColor(i, leftRing.Color(0, MAX, 0));
       }
       leftRing.show();
     }
-// ROOD    
+  }
+// ROOD
+void lrood() {
     else if (Astate == 1) {
       if (accx[0] > CENTER + MARGIN) {
         digitalWrite(52, LOW);  // options
@@ -255,7 +396,10 @@ void loop() {
       }
       leftRing.show();
     }
-// BLAUW:     
+  }
+
+  void lblauw() {
+// BLAUW:
     else {
       if (accx[0] > CENTER + MARGIN) {
         digitalWrite(50, HIGH);  // vierkantje + L1
@@ -297,11 +441,12 @@ void loop() {
       }
       leftRing.show();
     }
+  }
  /////////RECHTS////////////////////////////
  // GROEN
     int directionB = -1;
     if (Bstate == 0 ) {
-      
+
  //   analogWrite(6, 127);  // axis 3
  //    analogWrite(7, 127);  // axis 4
 
@@ -313,8 +458,8 @@ void loop() {
       else if (accy[1] <(CENTER - 80)) analogWrite(7,accy[1]);
       else analogWrite(7,127);
 
-      
-      
+
+
       if (accx[1] > CENTER + MARGIN || accx[1] < CENTER - MARGIN || accy[1] > CENTER + MARGIN || accy[1] < CENTER - MARGIN)directionB = ((int)(6.3 * (3.1415 + atan2(accx[1] - CENTER, accy[1] - CENTER)) / 3.1415)); else directionB = -1;
       if (c_button[1]) digitalWrite(26, LOW); else digitalWrite(26, HIGH); // (vierkant)
       for (int i = 0; i < 12; i++) {
@@ -323,12 +468,12 @@ void loop() {
       }
       rightRing.show();
     }
-// ROOD    
+// ROOD
     else if (Bstate == 1) {
 
       if (c_button[1]) digitalWrite(34, LOW); else digitalWrite(34, HIGH); // (R2)
-      
-      
+
+
       if (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
         digitalWrite(28, LOW);  // rondje
         Bbuffer[9] = MAX;
@@ -407,7 +552,7 @@ void loop() {
       }
       rightRing.show();
     }
-// BLAUW    
+// BLAUW
     else {
       if (Rreleased == 0) {
         if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
