@@ -174,18 +174,15 @@ class Contr {
 
     // this one private? would make sense, except it is parent class
     void init() {
-
-
-      pinMode(13, OUTPUT); // greenLED
+      pinMode(m_ps4pins["greenLED"], OUTPUT); // greenLED 13
       pinMode(9, OUTPUT);
 
       for (const auto& [key, pinnr] : m_ps4pins) {
         pinMode(pinnr, OUTPUT);
         digitalWrite(pinnr, HIGH);
       }
-
-
-
+      //std::pair<std::string,uint8_t> writeDigLow[4] =   map find
+      // mymap['d']
       digitalWrite(4, LOW); // hoog actief
       digitalWrite(7, LOW); // hoog actief
       digitalWrite(48, LOW);// hoog actief
