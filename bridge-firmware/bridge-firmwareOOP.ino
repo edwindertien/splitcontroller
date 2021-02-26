@@ -50,6 +50,7 @@
 #define DEBUG (1)
 
 #include <Adafruit_NeoPixel.h>
+
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
@@ -59,8 +60,6 @@ const enum Mode {GREEN = 0, RED = 1, BLUE = 2};
 
 // Device is constant because the device won't change during use.
 const Device dv = PS4CONTR;
-
-
 
 // replace by ternary --> device enum as declared above
 #ifdef NUNCHUCK
@@ -124,7 +123,6 @@ unsigned char Cbuffer[12];
 unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
 int LeftReleased, RightReleased;
-// int LeftMode,RightMode;
 
 class Contr {
   public:
@@ -173,9 +171,9 @@ class Contr {
       pinMode(m_analogpins["c_button1"], INPUT_PULLUP);
       pinMode(m_analogpins["z_button1"], INPUT_PULLUP);
 
-    #ifdef DEBUG
-      Serial.println("started up");
-    #endif
+      #ifdef DEBUG
+        Serial.println("started up");
+      #endif
       leftRing.begin();
       rightRing.begin();
       for (int i = 0; i < 12; i++) {
@@ -246,7 +244,6 @@ class Nunchuckcontr : public Contr {
         }
       }
     }
-
 };
 
 class Modps4contr : public Contr {
@@ -279,6 +276,17 @@ class Modps4contr : public Contr {
   }
 };
 
+// method has optional argument c to check whether a
+// exceeds value b plus optional margin so on positive side of defined margin
+bool is_above_margin(int a, int b = CENTER, int c = MARGIN) {
+  return (a > (b + c));
+}
+// method has optional argument c to check whether a
+// exceeds value b minus optional margin so on negative side of defined margin
+bool is_below_margin(int a, int b = CENTER, int c = MARGIN)) {
+  return (a < (b - c));
+}
+
 // setup is like int main()
 void setup() {
 #ifdef DEBUG
@@ -291,313 +299,291 @@ void setup() {
   (dv == NUNCHUCK) ? () : ();
   // call init()
 
-} // end setup
+}
 
 void loop() {
   if (millis() > loopTime + 19) { // run at 10 Hz
     loopTime = millis();
 
 
-///////// LINKS - NUNCHUCK FUNCTIONS ////
-// GROEN
-
-
-// links
-    switch(LeftMode) {
-      case 0: // groen
-
-        break;
-      case 1: // rood
-        break;
-      default: // blauw
     }
+switch(LeftMode) {
+  case GREEN:
+    int directionA = -1;
+    analogWrite(m_ps4pins["joyRYax1"], accx[0]); // axis 1
+    analogWrite(m_ps4pins["joyRXax2"], 255-accy[0]); // axis 2
+    // visualisation
+    if (accx[0] > CENTER + MARGIN || accx[0] < CENTER - MARGIN || accy[0] > CENTER + MARGIN || accy[0] < CENTER - MARGIN)directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415)); else directionA = -1;
 
-void lgroen() {
-    if (LeftMode == GREEN ) {
-      int directionA = -1;
-      analogWrite(m_ps4pins["joyRYax1"], accx[0]); // axis 1
-      analogWrite(m_ps4pins["joyRXax2"], 255-accy[0]); // axis 2
-      // visualisation
-      if (accx[0] > CENTER + MARGIN || accx[0] < CENTER - MARGIN || accy[0] > CENTER + MARGIN || accy[0] < CENTER - MARGIN)directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415)); else directionA = -1;
+    if (z_button[0]) digitalWrite(m_ps4pins["xbutton"], LOW);
+    else digitalWrite(m_ps4pins["xbutton"], HIGH); // (X)
 
-      if (z_button[0]) digitalWrite(m_ps4pins["xbutton"], LOW); else digitalWrite(m_ps4pins["xbutton"], HIGH); // (X)
-
-      for (int i = 0; i < 12; i++) {
-        leftRing.setPixelColor(i, leftRing.Color(0, MIN, 0));
-        if (i == directionA)leftRing.setPixelColor(i, leftRing.Color(0, MAX, 0));
-      }
-      leftRing.show();
+    for (int i = 0; i < 12; i++) {
+      leftRing.setPixelColor(i, leftRing.Color(0, MIN, 0));
+      if (i == directionA)leftRing.setPixelColor(i, leftRing.Color(0, MAX, 0));
     }
-  }
-// ROOD
-void lrood() {
-    if (LeftMode == RED) {
-      if (accx[0] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["optbutton"], LOW);  // options
-        Abuffer[9] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["optbutton"] , HIGH);
-        Abuffer[9] = MIN;
-      }
-      if (accx[0] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["shrebutton"], LOW);  // share
-        Abuffer[3] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["shrebutton"], HIGH);
-        Abuffer[3] = MIN;
-      }
-      if (accy[0] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["psbutton"], LOW);  // PS
-        Abuffer[6] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["psbutton"], HIGH);
-        Abuffer[6] = MIN;
-      }
-      if (accy[0] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["joyLXax3"] , HIGH);  // Z-as  ?? pin 5 = joyLXax3
-        Abuffer[0] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["joyLXax3"], LOW);
-        Abuffer[0] = MIN;
-      }
-      //visualisation
-      for (int i = 0; i < 12; i++) {
-        leftRing.setPixelColor(i, leftRing.Color(Abuffer[i], 0, 0));
-      }
-      leftRing.show();
+    leftRing.show();
+    break;
+  case RED:
+    //(m > n) ? "m is bigger" : "n is bigger";
+    //(is_above_margin(accx[0])) ? (low and max) : (high and min);
+    // check possibilities of enum and bitwise operands (high/low ~ MIN max)
+    if (accx[0] > CENTER + MARGIN) {
+      digitalWrite(m_ps4pins["optbutton"], LOW);  // options
+      Abuffer[9] = MAX;
     }
-  }
-
-  void lblauw() {
-// BLAUW:
-    if (LeftMode == BLUE){
-      if (accx[0] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["l1button5"], HIGH);  // vierkantje + L1
-        digitalWrite(26, LOW);
-        Abuffer[9] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["l1button5"], LOW);
-        digitalWrite(m_ps4pins["sqbutton"], HIGH);
-        Abuffer[9] = MIN;
-      }
-      if (accx[0] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["l1button5"], HIGH);  //
-        Abuffer[3] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["l1button5"], LOW);
-        Abuffer[3] = MIN;
-      }
-      if (accy[0] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["sqbutton"], LOW);  //
-        Abuffer[6] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["sqbutton"], HIGH);
-        Abuffer[6] = MIN;
-      }
-      if (accy[0] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["circbutton"], LOW);  //
-        Abuffer[0] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["circbutton"], HIGH);
-        Abuffer[0] = MIN;
-      }
-      //visualisation
-      for (int i = 0; i < 12; i++) {
-        leftRing.setPixelColor(i, leftRing.Color(0, 0, Abuffer[i]));
-      }
-      leftRing.show();
-    }
-  }
- /////////RECHTS////////////////////////////
- // GROEN
-    int directionB = -1;
-    if (RightMode == GREEN ) {
-
- //   analogWrite(6, 127);  // axis 3
- //    analogWrite(7, 127);  // axis 4
-
-      if (accx[1] > (CENTER + 80)) analogWrite(6,accx[1]);
-      else if (accx[1] <(CENTER - 80)) analogWrite(6,accx[1]);
-      else analogWrite(m_PWMpins["PWM4"],127);
-
-      if (accy[1] > (CENTER + 80)) analogWrite(7,accy[1]);
-      else if (accy[1] <(CENTER - 80)) analogWrite(7,accy[1]);
-      else analogWrite(m_PWMpins["PWM5"],127);
-
-
-
-      if (accx[1] > CENTER + MARGIN || accx[1] < CENTER - MARGIN || accy[1] > CENTER + MARGIN || accy[1] < CENTER - MARGIN)directionB = ((int)(6.3 * (3.1415 + atan2(accx[1] - CENTER, accy[1] - CENTER)) / 3.1415)); else directionB = -1;
-      if (c_button[1]) digitalWrite(26, LOW); else digitalWrite(26, HIGH); // (vierkant)
-      for (int i = 0; i < 12; i++) {
-        rightRing.setPixelColor(i, rightRing.Color(0, MIN, 0));
-        if (i == directionB)rightRing.setPixelColor(i, rightRing.Color(0, MAX, 0));
-      }
-      rightRing.show();
-    }
-// ROOD
-    if (RightMode == RED) {
-
-      if (c_button[1]) digitalWrite(34, LOW); else digitalWrite(34, HIGH); // (R2)
-
-
-      if (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["circbutton"], LOW);  // rondje
-        Bbuffer[9] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["circbutton"], HIGH);
-        Bbuffer[9] = MIN;
-      }
-      if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["r1button6"] , HIGH);  // R1
-        Bbuffer[7] = MAX;
-        Bbuffer[8] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["r1button6"], LOW);  // R1
-        Bbuffer[7] = MIN;
-        Bbuffer[8] = MIN;
-      }
-      if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["l1button5"], HIGH);  // L1
-        Bbuffer[4] = MAX;
-        Bbuffer[5] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["l1button5"], LOW);  // L1
-        Bbuffer[5] = MIN;
-        Bbuffer[4] = MIN;
-      }
-      if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["r2button"], LOW);  // R2
-        Bbuffer[10] = MAX;
-        Bbuffer[11] = MAX;
-      }
-      else {
-        if(c_button[1]==0)digitalWrite(34, HIGH);  // R2
-        Bbuffer[10] = MIN;
-        Bbuffer[11] = MIN;
-      }
-      if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN) {
-        digitalWrite(m_ps4pins["l2button"], LOW);  // L2
-        Bbuffer[1] = MAX;
-        Bbuffer[2] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["l2button"], HIGH);  // L2
-        Bbuffer[1] = MIN;
-        Bbuffer[2] = MIN;
-      }
-      if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
-        digitalWrite(m_ps4pins["sqbutton"], LOW);  // vierkantje
-        Bbuffer[3] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["sqbutton"], HIGH);
-        Bbuffer[3] = MIN;
-      }
-      if (accy[1] > CENTER + MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
-        digitalWrite(m_ps4pins["tributton"], LOW);  // driehoekje
-        Bbuffer[6] = MAX;
-      }
-      else {
-        digitalWrite(m_ps4pins["tributton"], HIGH);
-        Bbuffer[6] = MIN;
-      }
-      if (accy[1] < CENTER - MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
-        digitalWrite(m_ps4pins["xbutton"], LOW);  // kruisje
-        Bbuffer[0] = MAX;
-      }
-      else {
-        if(z_button[0]==0) digitalWrite(38, HIGH);
-        Bbuffer[0] = MIN;
-      }
-
-      for (int i = 0; i < 12; i++) {
-        rightRing.setPixelColor(i, rightRing.Color(Bbuffer[i], 0, 0));
-      }
-      rightRing.show();
-    }
-// BLAUW
     else {
-      if (Rreleased == 0) {
-        if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
-          digitalWrite(m_ps4pins["r1button6"], HIGH);  // R1
-          R1state = 1;
-          Rreleased = 1;
-          Bbuffer[7] = MAX;
-          Bbuffer[8] = MAX;
-        }
-
-        else if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 1) {
-          digitalWrite(m_ps4pins["r1button6"], LOW);
-          R1state = 0;
-          Rreleased = 1;
-          Bbuffer[7] = MIN;
-          Bbuffer[8] = MIN;
-        }
-
-
-        else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 0) {
-          digitalWrite(m_ps4pins["l1button5"] , HIGH); // L1
-          L1state = 1;
-          Rreleased = 1;
-          Bbuffer[4] = MAX;
-          Bbuffer[5] = MAX;
-        }
-        else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 1) {
-          digitalWrite(m_ps4pins["l1button5"], LOW);
-          L1state = 0;
-          Rreleased = 1;
-          Bbuffer[4] = MIN;
-          Bbuffer[5] = MIN;
-        }
-
-        else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 0) {
-          digitalWrite(m_ps4pins["r2button"], LOW); // R2
-          R2state = 1;
-          Rreleased = 1;
-          Bbuffer[10] = MAX;
-          Bbuffer[11] = MAX;
-        }
-        else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 1) {
-          digitalWrite(m_ps4pins["r2button"], HIGH);
-          R2state = 0;
-          Rreleased = 1;
-          Bbuffer[10] = MIN;
-          Bbuffer[11] = MIN;
-        }
-
-        else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 0) {
-          digitalWrite(m_ps4pins["l2button"], LOW); // L2
-          L2state = 1;
-          Rreleased = 1;
-          Bbuffer[1] = MAX;
-          Bbuffer[2] = MAX;
-        }
-        else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 1) {
-          digitalWrite(m_ps4pins["l2button"], HIGH);
-          L2state = 0;
-          Rreleased = 1;
-          Bbuffer[1] = MIN;
-          Bbuffer[2] = MIN;
-        }
-      }
-      if (accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN && accy[1] < CENTER + MARGIN && accy[1] > CENTER - MARGIN) Rreleased = 0;
-
-      for (int i = 0; i < 12; i++) {
-        rightRing.setPixelColor(i, rightRing.Color(0, 0, Bbuffer[i]));
-      }
-      rightRing.show();
+      digitalWrite(m_ps4pins["optbutton"] , HIGH);
+      Abuffer[9] = MIN;
     }
+    if (accx[0] < CENTER - MARGIN) {
+      digitalWrite(m_ps4pins["shrebutton"], LOW);  // share
+      Abuffer[3] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["shrebutton"], HIGH);
+      Abuffer[3] = MIN;
+    }
+    if (accy[0] > CENTER + MARGIN) {
+      digitalWrite(m_ps4pins["psbutton"], LOW);  // PS
+      Abuffer[6] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["psbutton"], HIGH);
+      Abuffer[6] = MIN;
+    }
+    if (accy[0] < CENTER - MARGIN) {
+      digitalWrite(m_ps4pins["joyLXax3"] , HIGH);  // Z-as  ?? pin 5 = joyLXax3
+      Abuffer[0] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["joyLXax3"], LOW);
+      Abuffer[0] = MIN;
+    }
+    //visualisation
+    for (int i = 0; i < 12; i++) {
+      leftRing.setPixelColor(i, leftRing.Color(Abuffer[i], 0, 0));
+    }
+    leftRing.show();
+    break;
+  case BLUE:
+    if (accx[0] > CENTER + MARGIN) {
+      digitalWrite(m_ps4pins["l1button5"], HIGH);  // vierkantje + L1
+      digitalWrite(26, LOW);
+      Abuffer[9] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["l1button5"], LOW);
+      digitalWrite(m_ps4pins["sqbutton"], HIGH);
+      Abuffer[9] = MIN;
+    }
+    if (accx[0] < CENTER - MARGIN) {
+      digitalWrite(m_ps4pins["l1button5"], HIGH);  //
+      Abuffer[3] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["l1button5"], LOW);
+      Abuffer[3] = MIN;
+    }
+    if (accy[0] > CENTER + MARGIN) {
+      digitalWrite(m_ps4pins["sqbutton"], LOW);  //
+      Abuffer[6] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["sqbutton"], HIGH);
+      Abuffer[6] = MIN;
+    }
+    if (accy[0] < CENTER - MARGIN) {
+      digitalWrite(m_ps4pins["circbutton"], LOW);  //
+      Abuffer[0] = MAX;
+    }
+    else {
+      digitalWrite(m_ps4pins["circbutton"], HIGH);
+      Abuffer[0] = MIN;
+    }
+    //visualisation
+    for (int i = 0; i < 12; i++) {
+      leftRing.setPixelColor(i, leftRing.Color(0, 0, Abuffer[i]));
+    }
+    leftRing.show();
+    break;
+}
+
+int directionB = -1;
+
+switch(LeftMode) {
+  case GREEN:
+    //   analogWrite(6, 127);  // axis 3
+    //    analogWrite(7, 127);  // axis 4
+   if (accx[1] > (CENTER + 80)) analogWrite(6,accx[1]);
+   else if (accx[1] <(CENTER - 80)) analogWrite(6,accx[1]);
+   else analogWrite(m_PWMpins["PWM4"],127);
+   if (accy[1] > (CENTER + 80)) analogWrite(7,accy[1]);
+   else if (accy[1] <(CENTER - 80)) analogWrite(7,accy[1]);
+   else analogWrite(m_PWMpins["PWM5"],127);
+   if (accx[1] > CENTER + MARGIN || accx[1] < CENTER - MARGIN || accy[1] > CENTER + MARGIN || accy[1] < CENTER - MARGIN)directionB = ((int)(6.3 * (3.1415 + atan2(accx[1] - CENTER, accy[1] - CENTER)) / 3.1415)); else directionB = -1;
+   if (c_button[1]) digitalWrite(26, LOW); else digitalWrite(26, HIGH); // (vierkant)
+   for (int i = 0; i < 12; i++) {
+     rightRing.setPixelColor(i, rightRing.Color(0, MIN, 0));
+     if (i == directionB)rightRing.setPixelColor(i, rightRing.Color(0, MAX, 0));
+   }
+   rightRing.show();
+   break;
+ case RED:
+   if (c_button[1]) digitalWrite(34, LOW); else digitalWrite(34, HIGH); // (R2)
+
+   if (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
+     digitalWrite(m_ps4pins["circbutton"], LOW);  // rondje
+     Bbuffer[9] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["circbutton"], HIGH);
+     Bbuffer[9] = MIN;
+   }
+   if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN) {
+     digitalWrite(m_ps4pins["r1button6"] , HIGH);  // R1
+     Bbuffer[7] = MAX;
+     Bbuffer[8] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["r1button6"], LOW);  // R1
+     Bbuffer[7] = MIN;
+     Bbuffer[8] = MIN;
+   }
+   if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN) {
+     digitalWrite(m_ps4pins["l1button5"], HIGH);  // L1
+     Bbuffer[4] = MAX;
+     Bbuffer[5] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["l1button5"], LOW);  // L1
+     Bbuffer[5] = MIN;
+     Bbuffer[4] = MIN;
+   }
+   if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN) {
+     digitalWrite(m_ps4pins["r2button"], LOW);  // R2
+     Bbuffer[10] = MAX;
+     Bbuffer[11] = MAX;
+   }
+   else {
+     if(c_button[1]==0)digitalWrite(34, HIGH);  // R2
+     Bbuffer[10] = MIN;
+     Bbuffer[11] = MIN;
+   }
+   if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN) {
+     digitalWrite(m_ps4pins["l2button"], LOW);  // L2
+     Bbuffer[1] = MAX;
+     Bbuffer[2] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["l2button"], HIGH);  // L2
+     Bbuffer[1] = MIN;
+     Bbuffer[2] = MIN;
+   }
+   if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
+     digitalWrite(m_ps4pins["sqbutton"], LOW);  // vierkantje
+     Bbuffer[3] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["sqbutton"], HIGH);
+     Bbuffer[3] = MIN;
+   }
+   if (accy[1] > CENTER + MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
+     digitalWrite(m_ps4pins["tributton"], LOW);  // driehoekje
+     Bbuffer[6] = MAX;
+   }
+   else {
+     digitalWrite(m_ps4pins["tributton"], HIGH);
+     Bbuffer[6] = MIN;
+   }
+   if (accy[1] < CENTER - MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
+     digitalWrite(m_ps4pins["xbutton"], LOW);  // kruisje
+     Bbuffer[0] = MAX;
+   }
+   else {
+     if(z_button[0]==0) digitalWrite(38, HIGH);
+     Bbuffer[0] = MIN;
+   }
+
+   for (int i = 0; i < 12; i++) {
+     rightRing.setPixelColor(i, rightRing.Color(Bbuffer[i], 0, 0));
+   }
+   rightRing.show();
+   break;
+ case BLUE:
+   if (Rreleased == 0) {
+     if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
+       digitalWrite(m_ps4pins["r1button6"], HIGH);  // R1
+       R1state = 1;
+       Rreleased = 1;
+       Bbuffer[7] = MAX;
+       Bbuffer[8] = MAX;
+     }
+
+     else if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 1) {
+       digitalWrite(m_ps4pins["r1button6"], LOW);
+       R1state = 0;
+       Rreleased = 1;
+       Bbuffer[7] = MIN;
+       Bbuffer[8] = MIN;
+     }
+
+
+     else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 0) {
+       digitalWrite(m_ps4pins["l1button5"] , HIGH); // L1
+       L1state = 1;
+       Rreleased = 1;
+       Bbuffer[4] = MAX;
+       Bbuffer[5] = MAX;
+     }
+     else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 1) {
+       digitalWrite(m_ps4pins["l1button5"], LOW);
+       L1state = 0;
+       Rreleased = 1;
+       Bbuffer[4] = MIN;
+       Bbuffer[5] = MIN;
+     }
+
+     else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 0) {
+       digitalWrite(m_ps4pins["r2button"], LOW); // R2
+       R2state = 1;
+       Rreleased = 1;
+       Bbuffer[10] = MAX;
+       Bbuffer[11] = MAX;
+     }
+     else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 1) {
+       digitalWrite(m_ps4pins["r2button"], HIGH);
+       R2state = 0;
+       Rreleased = 1;
+       Bbuffer[10] = MIN;
+       Bbuffer[11] = MIN;
+     }
+
+     else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 0) {
+       digitalWrite(m_ps4pins["l2button"], LOW); // L2
+       L2state = 1;
+       Rreleased = 1;
+       Bbuffer[1] = MAX;
+       Bbuffer[2] = MAX;
+     }
+     else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 1) {
+       digitalWrite(m_ps4pins["l2button"], HIGH);
+       L2state = 0;
+       Rreleased = 1;
+       Bbuffer[1] = MIN;
+       Bbuffer[2] = MIN;
+     }
+   }
+   if (accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN && accy[1] < CENTER + MARGIN && accy[1] > CENTER - MARGIN) Rreleased = 0;
+
+   for (int i = 0; i < 12; i++) {
+     rightRing.setPixelColor(i, rightRing.Color(0, 0, Bbuffer[i]));
+   }
+   rightRing.show();
+   break;
+}
+
+
     ///// NUNCHUCK 1 button switch ///////
     if (LeftReleased == 0) {
       if (c_button[0] == 1 && LeftMode == GREEN) {

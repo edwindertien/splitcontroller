@@ -1,0 +1,16 @@
+TODO:
+
+What is the meaning of:
+  boolean L1state, R1state, R2state, L2state, Rreleased;
+
+Why int, what does this do? (name suggests boolean):
+  int LeftReleased, RightReleased;
+
+Rename elements of m_PWMpins:
+  e.g. "PWM1" doesn't say anything about what is connected to this pin. Couldn't derive this from original code yet.
+
+Check OOP validation:
+  switch Mode in class?
+
+Check whether this is even used:
+  std::map<std::string,uint8_t>::iterator it; (around line 115)
