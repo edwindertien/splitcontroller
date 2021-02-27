@@ -50,6 +50,7 @@
 #define DEBUG (1)
 
 #include <Adafruit_NeoPixel.h>
+#include <ArduinoSTL.h>
 
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
@@ -111,8 +112,6 @@ m_PWMpins["PWM2"] = 3;
 m_PWMpins["PWM3"] = 5;
 m_PWMpins["PWM4"] = 6;
 m_PWMpins["PWM5"] = 7;
-
-std::map<std::string,uint8_t>::iterator it;
 
 unsigned long loopTime;
 
@@ -287,6 +286,10 @@ bool is_below_margin(int a, int b = CENTER, int c = MARGIN)) {
   return (a < (b - c));
 }
 
+bool exceeds_neutral_range(int a, int b = CENTER, int c = MARGIN)) {
+  return (a < (b - c) || a > (b + c));
+}
+
 // setup is like int main()
 void setup() {
 #ifdef DEBUG
@@ -313,7 +316,10 @@ switch(LeftMode) {
     analogWrite(m_ps4pins["joyRYax1"], accx[0]); // axis 1
     analogWrite(m_ps4pins["joyRXax2"], 255-accy[0]); // axis 2
     // visualisation
-    if (accx[0] > CENTER + MARGIN || accx[0] < CENTER - MARGIN || accy[0] > CENTER + MARGIN || accy[0] < CENTER - MARGIN)directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415)); else directionA = -1;
+
+    if(exceeds_neutral_range(accx[0]) || exceeds_neutral_range(accy[0])) {
+      directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415));
+    }
 
     if (z_button[0]) digitalWrite(m_ps4pins["xbutton"], LOW);
     else digitalWrite(m_ps4pins["xbutton"], HIGH); // (X)
@@ -325,9 +331,12 @@ switch(LeftMode) {
     leftRing.show();
     break;
   case RED:
+    int writebuffer;
+    int writeout;
     //(m > n) ? "m is bigger" : "n is bigger";
     //(is_above_margin(accx[0])) ? (low and max) : (high and min);
     // check possibilities of enum and bitwise operands (high/low ~ MIN max)
+    (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = HIGH; writebuffer = MIN);
     if (accx[0] > CENTER + MARGIN) {
       digitalWrite(m_ps4pins["optbutton"], LOW);  // options
       Abuffer[9] = MAX;
@@ -430,7 +439,7 @@ switch(LeftMode) {
    rightRing.show();
    break;
  case RED:
-   if (c_button[1]) digitalWrite(34, LOW); else digitalWrite(34, HIGH); // (R2)
+   if (c_button[1]) digitalWrite(m_ps4pins["r2button"], LOW); else digitalWrite(m_ps4pins["r2button"], HIGH); // (R2)
 
    if (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
      digitalWrite(m_ps4pins["circbutton"], LOW);  // rondje
@@ -501,7 +510,7 @@ switch(LeftMode) {
      Bbuffer[0] = MAX;
    }
    else {
-     if(z_button[0]==0) digitalWrite(38, HIGH);
+     if(z_button[0]==0) digitalWrite(m_ps4pins["xbutton"], HIGH);
      Bbuffer[0] = MIN;
    }
 

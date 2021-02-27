@@ -1,0 +1,22 @@
+TODO:
+
+What is the meaning of:
+  boolean L1state, R1state, R2state, L2state, Rreleased;
+
+Why int, what does this do? (name suggests boolean, because 'released' can be either true or false):
+  int LeftReleased, RightReleased;
+
+Rename elements of m_PWMpins:
+  e.g. "PWM1" doesn't say anything about what is connected to this pin. Couldn't derive this from original code yet.
+
+Check OOP validation:
+  switch 'Mode' in class?
+
+int directionA  in case GREEN bij LeftMode, does A mean 'left'?
+
+void init() {
+  Wire.setClock(10000) ;
+  pinMode(20, INPUT_PULLUP);
+  pinMode(21, INPUT_PULLUP);
+
+  what are pin # 20 and 21 for?
