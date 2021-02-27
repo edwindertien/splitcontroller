@@ -20,3 +20,17 @@ void init() {
   pinMode(21, INPUT_PULLUP);
 
   what are pin # 20 and 21 for?
+
+
+// I don't understand the one below. accy > center MINUS margin and accy < center PLUS margin?
+
+(accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
+
+
+
+// below: 'else' can be removed? (LeftMode GREEN)
+int directionB = -1;
+......
+} else {    // can be removed because directionB = -1 from line 289?
+  directionB = -1;
+}
