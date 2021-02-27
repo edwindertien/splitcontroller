@@ -50,7 +50,7 @@
  //  arduino-cli compile --fqbn arduino:avr:nano bridge-firmwareOOP
 // arduino:avr:uno arduino:avr:diecimila  arduino:avr:mega  arduino:avr:leonardo
 //#define NUNCHUCK (1)
-#define DEBUG (1)
+//#define DEBUG (1)
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
@@ -78,47 +78,52 @@ const Device dv = PS4CONTR;
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
 
-std::map<std::string,uint8_t> m_ps4pins;
-m_ps4pins["joyRXax2"] = 2;     // Joystick R - X - axis 2
-m_ps4pins["joyRYax1"] = 3;     // Joystick R - Y - axis 1
-m_ps4pins["joyRZb11"] = 4;     // Joystick R - z - button 11 // hoog actief
-m_ps4pins["joyLZb12"] = 7;     // Joystick L - z - button 12 // hoog actief
-m_ps4pins["joyLYax4"] = 6;     // Joystick L - Y - axis 4
-m_ps4pins["joyLXax3"] = 5;     // Joystick L - X - axis 3
-m_ps4pins["sqbutton"] = 26;    // square button
-m_ps4pins["circbutton"] = 28;  // circle button
-m_ps4pins["psbutton"] = 30;    // PS
-m_ps4pins["l2button"] = 32;    // L2
-m_ps4pins["r2button"] = 34;    // R2
-m_ps4pins["tributton"] = 36;   // triangle button
-m_ps4pins["xbutton"] = 38;     // cross (X) button
-m_ps4pins["lhat"] = 40;        // left - hat
-m_ps4pins["rhat"] = 42;        // right - hat
-m_ps4pins["uhat"] = 44;        // up - hat
-m_ps4pins["dhat"] = 46;        // down - hat
-m_ps4pins["r1button6"] = 48;   // R1   // button 6 // hoog actief
-m_ps4pins["l1button5"] = 50;   // L1   // button 5 // hoog actief
-m_ps4pins["optbutton"] =  52;  // options button
-//m_ps4pins["shrebutton"] = A8;   // share
+std::map<std::string,uint8_t> m_ps4pins =
+{
+  {"joyRXax2", 2},
+  {"joyRYax1", 3},
+  {"joyRZb11", 4},
+  {"joyLZb12", 7},
+  {"joyLYax4", 6},
+  {"joyLXax3", 5},
+  {"sqbutton", 26},
+  {"circbutton", 28},
+  {"psbutton", 30},
+  {"l2button", 32},
+  {"r2button", 34},
+  {"tributton", 36},
+  {"xbutton", 38},
+  {"lhat", 40},
+  {"rhat", 42},
+  {"uhat", 44},
+  {"dhat", 46},
+  {"r1button6", 48},
+  {"l1button5", 50},
+  {"optbutton",  52}
+};
 
 // nunchuck or analog joystick
-std::map<std::string,string> m_analogpins;
-m_analogpins["accx1"] = "A5";
-m_analogpins["accy1"] = "A4";
-m_analogpins["accx2"] = "A1";
-m_analogpins["accy2"] = "A0";
-m_analogpins["c_button1"] = "A6";
-m_analogpins["z_button1"] = "A7";
-m_analogpins["c_button2"] = "A2";
-m_analogpins["z_button2"] = "A3";
-m_analogpins["shrebutton"] = "A8";   // share
+std::map<std::string,std::string> m_analogpins =
+{
+  {"accx1", "A5"},
+  {"accy1", "A4"},
+  {"accx2", "A1"},
+  {"accy2", "A0"},
+  {"c_button1", "A6"},
+  {"z_button1", "A7"},
+  {"c_button2", "A2"},
+  {"z_button2", "A3"},
+  {"shrebutton", "A8"}
+};
 
-std::map<std::string,string> m_PWMpins;
-m_PWMpins["PWM1"] = 2;
-m_PWMpins["PWM2"] = 3;
-m_PWMpins["PWM3"] = 5;
-m_PWMpins["PWM4"] = 6;
-m_PWMpins["PWM5"] = 7;
+std::map<std::string,std::string> m_PWMpins =
+{
+  {"PWM1", 2},
+  {"PWM2", 3},
+  {"PWM3", 5},
+  {"PWM4", 6},
+  {"PWM5", 7}
+};
 
 unsigned long loopTime;
 
@@ -132,8 +137,8 @@ int LeftReleased, RightReleased;
 
 class Contr {
   protected:
-    const uint8_t CENTER;
-    const uint8_t MARGIN;
+    uint8_t CENTER;
+    uint8_t MARGIN;
     const uint8_t MIN = 5;
     const uint8_t MAX = 130;
 
@@ -238,19 +243,19 @@ class Contr {
           leftRing.show();
           break;
         case RED:
-          (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = HIGH; writebuffer = MIN);
+          (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
           digitalWrite(m_ps4pins["optbutton"], writeout);
           Abuffer[9] = writebuffer;
 
-          (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = HIGH; writebuffer = MIN);
+          (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
           digitalWrite(m_analogpins["shrebutton"], writeout);
           Abuffer[3] = writebuffer;
 
-          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = HIGH; writebuffer = MIN);
+          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
           digitalWrite(m_ps4pins["psbutton"], writeout);  // PS
           Abuffer[6] = writebuffer;
 
-          (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX) : (writeout  = LOW; writebuffer = MIN);
+          (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
           digitalWrite(m_ps4pins["joyLXax3"] , writeout);  // Z-as  ?? pin 5 = joyLXax3
           Abuffer[0] = writebuffer;
 
@@ -261,21 +266,21 @@ class Contr {
           leftRing.show();
           break;
         case BLUE:
-          (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN);
+          (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
           digitalWrite(m_ps4pins["l1button5"], writeout);
           digitalWrite(26, writeout1);
           Abuffer[9] = writebuffer;
 
-          (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX) : (writeout  = LOW; writebuffer = MIN);
+          (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
           digitalWrite(m_ps4pins["l1button5"], writeout);
           Abuffer[3] = writebuffer;
 
-          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = HIGH; writebuffer = MIN);
+          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
           digitalWrite(m_ps4pins["sqbutton"], writeout);
           Abuffer[6] = writebuffer;
 
-          (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX) : (writeout  = LOW; writebuffer = MIN);
-          digitalWrite(m_ps4pins["circbutton"], writeout);  //
+          (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+          digitalWrite(m_ps4pins["circbutton"], writeout);
           Abuffer[0] = writebuffer;
 
           //visualisation
@@ -516,7 +521,7 @@ class Contr {
     }
 };
 
-class Nunchuckcontr : public Contr {
+class Nunchuckcontr : protected Contr {
   private:
     const uint8_t NUNCHUCK_X_OFFSET = 0;
     const uint8_t NUNCHUCK_Y_OFFSET = 0;
@@ -569,7 +574,7 @@ class Nunchuckcontr : public Contr {
     }
 };
 
-class Modps4contr : public Contr {
+class Modps4contr : protected Contr {
   private:
   public:
 

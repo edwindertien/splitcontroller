@@ -1,0 +1,356 @@
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:126:1: error: could not convert '{{"PWM1", 2}, {"PWM2", 3}, {"PWM3", 5}, {"PWM4", 6}, {"PWM5", 7}}' from '<brace-enclosed initializer list>' to 'std::map<std::basic_string<char>, std::basic_string<char> >'
+ };
+ ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:213:73: error: expected ';' at end of member declaration
+     bool is_below_margin(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:213:74: error: expected unqualified-id before ')' token
+     bool is_below_margin(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                          ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:217:79: error: expected ';' at end of member declaration
+     bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                               ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:217:80: error: expected unqualified-id before ')' token
+     bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                                ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:208:46: error: invalid use of non-static data member 'Contr::CENTER'
+     bool is_above_margin(int a, int center = CENTER, int margin = MARGIN) {
+                                              ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:140:13: note: declared here
+     uint8_t CENTER;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:208:67: error: invalid use of non-static data member 'Contr::MARGIN'
+     bool is_above_margin(int a, int center = CENTER, int margin = MARGIN) {
+                                                                   ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:141:13: note: declared here
+     uint8_t MARGIN;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:213:46: error: invalid use of non-static data member 'Contr::CENTER'
+     bool is_below_margin(int a, int center = CENTER, int margin = MARGIN)) {
+                                              ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:140:13: note: declared here
+     uint8_t CENTER;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:213:67: error: invalid use of non-static data member 'Contr::MARGIN'
+     bool is_below_margin(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                   ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:141:13: note: declared here
+     uint8_t MARGIN;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:217:52: error: invalid use of non-static data member 'Contr::CENTER'
+     bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN)) {
+                                                    ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:140:13: note: declared here
+     uint8_t CENTER;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:217:73: error: invalid use of non-static data member 'Contr::MARGIN'
+     bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN)) {
+                                                                         ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:141:13: note: declared here
+     uint8_t MARGIN;
+             ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Contr::init()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:175:41: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+       analogWrite(m_PWMpins["PWM1"], 127);  // start with centervoltage
+                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:176:41: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+       analogWrite(m_PWMpins["PWM2"], 127);
+                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:177:41: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+       analogWrite(m_PWMpins["PWM3"], 127);
+                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:178:41: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+       analogWrite(m_PWMpins["PWM4"], 127);
+                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:180:54: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void pinMode(uint8_t, uint8_t)'
+       pinMode(m_analogpins["c_button2"], INPUT_PULLUP);  // for the switches.
+                                                      ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:181:54: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void pinMode(uint8_t, uint8_t)'
+       pinMode(m_analogpins["z_button2"], INPUT_PULLUP);
+                                                      ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:182:54: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void pinMode(uint8_t, uint8_t)'
+       pinMode(m_analogpins["c_button1"], INPUT_PULLUP);
+                                                      ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:183:54: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void pinMode(uint8_t, uint8_t)'
+       pinMode(m_analogpins["z_button1"], INPUT_PULLUP);
+                                                      ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Contr::operate()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:232:43: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           if(exceeds_neutral_range(accx[0]) || exceeds_neutral_range(accy[0])) {
+                                           ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:232:43: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:232:77: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           if(exceeds_neutral_range(accx[0]) || exceeds_neutral_range(accy[0])) {
+                                                                             ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:232:77: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:56: error: expected ')' before ';' token
+           (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:56: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:56: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:76: error: expected primary-expression before ')' token
+           (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:246:117: error: expected primary-expression before ')' token
+           (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:56: error: expected ')' before ';' token
+           (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:56: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:56: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:76: error: expected primary-expression before ')' token
+           (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:250:117: error: expected primary-expression before ')' token
+           (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:251:60: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void digitalWrite(uint8_t, uint8_t)'
+           digitalWrite(m_analogpins["shrebutton"], writeout);
+                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:56: error: expected ')' before ';' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:56: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:56: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:76: error: expected primary-expression before ')' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:117: error: expected primary-expression before ')' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:57: error: expected ')' before ';' token
+           (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:57: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:57: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:77: error: expected primary-expression before ')' token
+           (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                             ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:258:117: error: expected primary-expression before ')' token
+           (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:57: error: expected ')' before ';' token
+           (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:57: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:57: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:94: error: expected primary-expression before ')' token
+           (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
+                                                                                              ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:269:152: error: expected primary-expression before ')' token
+           (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
+                                                                                                                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:57: error: expected ')' before ';' token
+           (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:57: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:57: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:77: error: expected primary-expression before ')' token
+           (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                             ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:274:117: error: expected primary-expression before ')' token
+           (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:35: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:56: error: expected ')' before ';' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:56: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:56: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:76: error: expected primary-expression before ')' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:278:117: error: expected primary-expression before ')' token
+           (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+                                                                                                                     ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+           (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:35: error: call to 'bool Contr::is_below_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:56: error: expected ')' before ';' token
+           (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                        ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:56: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:56: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:76: error: expected primary-expression before ')' token
+           (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:282:116: error: expected primary-expression before ')' token
+           (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+                                                                                                                    ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:301:37: error: 'margin' was not declared in this scope
+           (is_above_margin(accx[1], margin=80) || is_below_margin(accx[1], margin=80)) ? (writeout  = accx[1]) : (writeout  = 127);
+                                     ^~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:301:37: note: suggested alternative: 'asin'
+           (is_above_margin(accx[1], margin=80) || is_below_margin(accx[1], margin=80)) ? (writeout  = accx[1]) : (writeout  = 127);
+                                     ^~~~~~
+                                     asin
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:302:49: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+           analogWrite(m_PWMpins["PWM4"],writeout);
+                                                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:305:49: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'void analogWrite(uint8_t, int)'
+           analogWrite(m_PWMpins["PWM4"],writeout);
+                                                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:42: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+          if(exceeds_neutral_range(accx[1]) || exceeds_neutral_range(accy[1])) {
+                                          ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:42: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:76: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+          if(exceeds_neutral_range(accx[1]) || exceeds_neutral_range(accy[1])) {
+                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:76: error: call to 'bool Contr::exceeds_neutral_range(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:112: error: expected ')' before ';' token
+         (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW; writebuffer = MAX;) : (writeout = HIGH; writebuffer = MIN;);
+                                                                                                                ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:112: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:112: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:132: error: expected primary-expression before ')' token
+         (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW; writebuffer = MAX;) : (writeout = HIGH; writebuffer = MIN;);
+                                                                                                                                    ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:172: error: expected primary-expression before ')' token
+         (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW; writebuffer = MAX;) : (writeout = HIGH; writebuffer = MIN;);
+                                                                                                                                                                            ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:33: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+         (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+                                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:33: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:61: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 2, which is not yet defined
+         (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+                                                             ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:61: error: call to 'bool Contr::is_above_margin(int, int, int)' uses the default argument for parameter 3, which is not yet defined
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:83: error: expected ')' before ';' token
+         (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+                                                                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:83: error: expected ':' before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:83: error: expected primary-expression before ';' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:103: error: expected primary-expression before ')' token
+         (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+                                                                                                       ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:330:143: error: expected primary-expression before ')' token
+         (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+                                                                                                                                               ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::init()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:544:7: error: 'Wire' was not declared in this scope
+       Wire.setClock(10000) ;
+       ^~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:548:7: error: 'nunchuck_init' was not declared in this scope
+       nunchuck_init();  // send the initilization handshake
+       ^~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:548:7: note: suggested alternative: 'Nunchuckcontr'
+       nunchuck_init();  // send the initilization handshake
+       ^~~~~~~~~~~~~
+       Nunchuckcontr
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::selectNunchuckChannel(int)':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:555:7: error: 'Wire' was not declared in this scope
+       Wire.begin();                // join i2c bus as master
+       ^~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::readInput()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:567:13: error: 'nunchuck_get_data' was not declared in this scope
+         if (nunchuck_get_data()) {
+             ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:568:26: error: 'nunchuck_joyx' was not declared in this scope
+           accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+                          ^~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:568:26: note: suggested alternative: 'Nunchuckcontr'
+           accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+                          ^~~~~~~~~~~~~
+                          Nunchuckcontr
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:569:26: error: 'nunchuck_joyy' was not declared in this scope
+           accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+                          ^~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:569:26: note: suggested alternative: 'Nunchuckcontr'
+           accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+                          ^~~~~~~~~~~~~
+                          Nunchuckcontr
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:570:30: error: 'nunchuck_cbutton' was not declared in this scope
+           c_button[n] = (int)nunchuck_cbutton();
+                              ^~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:570:30: note: suggested alternative: 'Nunchuckcontr'
+           c_button[n] = (int)nunchuck_cbutton();
+                              ^~~~~~~~~~~~~~~~
+                              Nunchuckcontr
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:571:30: error: 'nunchuck_zbutton' was not declared in this scope
+           z_button[n] = (int)nunchuck_zbutton();
+                              ^~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:571:30: note: suggested alternative: 'Nunchuckcontr'
+           z_button[n] = (int)nunchuck_zbutton();
+                              ^~~~~~~~~~~~~~~~
+                              Nunchuckcontr
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: At global scope:
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:581:15: error: expected unqualified-id before '{' token
+   Modps4contr {
+               ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:587:17: error: expected class-name before '{' token
+   ~Mmodps4contr {
+                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Modps4contr::readAnalogInput()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:596:51: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int analogRead(uint8_t)'
+     accx[0] = map(analogRead(m_analogpins["accx1"]), 0, 832, 0, 255);
+                                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:597:51: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int analogRead(uint8_t)'
+     accy[0] = map(analogRead(m_analogpins["accy1"]), 0, 832, 0, 255);
+                                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:598:51: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int analogRead(uint8_t)'
+     accx[1] = map(analogRead(m_analogpins["accx2"]), 0, 832, 0, 255);
+                                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:599:51: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int analogRead(uint8_t)'
+     accy[1] = map(analogRead(m_analogpins["accy2"]), 0, 832, 0, 255);
+                                                   ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:600:57: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int digitalRead(uint8_t)'
+     c_button[0] = !digitalRead(m_analogpins["c_button1"]);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:601:57: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int digitalRead(uint8_t)'
+     z_button[0] = !digitalRead(m_analogpins["z_button1"]);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:602:57: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int digitalRead(uint8_t)'
+     c_button[1] = !digitalRead(m_analogpins["c_button2"]);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:603:57: error: cannot convert 'std::basic_string<char>' to 'uint8_t {aka unsigned char}' for argument '1' to 'int digitalRead(uint8_t)'
+     z_button[1] = !digitalRead(m_analogpins["z_button2"]);
+                                                         ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In function 'void setup()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:618:19: error: no matching function for call to 'Nunchuckcontr::Nunchuckcontr()'
+     Nunchuckcontr controller;
+                   ^~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:530:5: note: candidate: Nunchuckcontr::Nunchuckcontr(uint8_t)
+     Nunchuckcontr(uint8_t pinLED) {
+     ^~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:530:5: note:   candidate expects 1 argument, 0 provided
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:524:7: note: candidate: constexpr Nunchuckcontr::Nunchuckcontr(const Nunchuckcontr&)
+ class Nunchuckcontr : protected Contr {
+       ^~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:524:7: note:   candidate expects 1 argument, 0 provided
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: At global scope:
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:652:1: error: expected declaration before '}' token
+ }
+ ^
+
+Error during build: exit status 1

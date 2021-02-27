@@ -1,3 +1,7 @@
+NOTE:
+build in Linux CLI (because the Arduino IDE is kinda buggy)   :
+arduino-cli compile --fqbn arduino:avr:diecimila bridge-firmwareOOP &>> debuglog.txt
+
 TODO:
 
 What is the meaning of:
