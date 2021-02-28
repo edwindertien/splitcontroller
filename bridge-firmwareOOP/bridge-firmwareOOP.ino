@@ -54,13 +54,14 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
-//#include <Wire.h>
-
+#include "NunchuckFunctions.h"
 #include <iostream>
 #include <map>
 
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
+
+NunchuckFunctions nunchuckFunctions;
 
 enum Device {NUNCHUCK, PS4CONTR};
 
@@ -69,11 +70,6 @@ enum Mode {GREEN, RED, BLUE};
 // Device is constant because the device won't change during use.
 const Device dv = PS4CONTR;
 
-// replace by ternary --> device enum as declared above
-#ifdef NUNCHUCK
-
-  #include "NunchuckFunctions.h"
-#endif
 
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
@@ -217,7 +213,7 @@ class Contr {
     bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN) {
       return (a < (center - margin) || a > (center + margin));
     }
-
+public:
     void operate() {
       int writebuffer;
       int writeout;
@@ -537,13 +533,13 @@ class Nunchuckcontr : protected Contr {
     }
     // setup function
     void init() {
-      NunchuckFunctions::Wire.setClock(10000) ;
+      nunchuckFunctions::Wire.setClock(10000) ;
       pinMode(20, INPUT_PULLUP);
       pinMode(21, INPUT_PULLUP);
-      NunchuckFunctions::selectNunchuckChannel(0);
-      NunchuckFunctions::nunchuck_init();  // send the initilization handshake
-      NunchuckFunctions::selectNunchuckChannel(1);
-      NunchuckFunctions::nunchuck_init();  // send the initilization handshake
+      nunchuckFunctions::selectNunchuckChannel(0);
+      nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+      nunchuckFunctions::selectNunchuckChannel(1);
+      nunchuckFunctions::nunchuck_init();  // send the initilization handshake
     }
     /*
     void selectNunchuckChannel(int channel) {
@@ -559,13 +555,13 @@ class Nunchuckcontr : protected Contr {
     void readInput() {
       // read both nunchucks
       for (int n = 0; n < 2; n++) {
-        NunchuckFunctions::selectNunchuckChannel(n);
+        nunchuckFunctions::selectNunchuckChannel(n);
         delay(10);
-        if (NunchuckFunctions::nunchuck_get_data()) {
-          accx[n] = (int)NunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-          accy[n] = (int)NunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-          c_button[n] = (int)NunchuckFunctions::nunchuck_cbutton();
-          z_button[n] = (int)NunchuckFunctions::nunchuck_zbutton();
+        if (nunchuckFunctions::nunchuck_get_data()) {
+          accx[n] = (int)nunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+          accy[n] = (int)nunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+          c_button[n] = (int)nunchuckFunctions::nunchuck_cbutton();
+          z_button[n] = (int)nunchuckFunctions::nunchuck_zbutton();
         }
       }
     }
