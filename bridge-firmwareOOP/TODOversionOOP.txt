@@ -4,6 +4,11 @@ arduino-cli compile --fqbn arduino:avr:diecimila bridge-firmwareOOP &>> debuglog
 
 TODO:
 
+There is a problem with "A8"
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:116:18: note: suggested alternative: 'A7'
+   {"shrebutton", A8}
+ Maybe I used the wrong arduino:avr ?
+
 What is the meaning of:
   boolean L1state, R1state, R2state, L2state, Rreleased;
 
