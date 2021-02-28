@@ -54,6 +54,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
+//#include <Wire.h>
 
 #include <iostream>
 #include <map>
@@ -70,9 +71,8 @@ const Device dv = PS4CONTR;
 
 // replace by ternary --> device enum as declared above
 #ifdef NUNCHUCK
-  #include <Wire.h>
-  #include "nunchuck_functions.h"
 
+  #include "NunchuckFunctions.h"
 #endif
 
 const uint8_t greenLED = 13;
@@ -103,20 +103,20 @@ std::map<std::string,uint8_t> m_ps4pins =
 };
 
 // nunchuck or analog joystick
-std::map<std::string,std::string> m_analogpins =
+std::map<std::string,uint8_t> m_analogpins =
 {
-  {"accx1", "A5"},
-  {"accy1", "A4"},
-  {"accx2", "A1"},
-  {"accy2", "A0"},
-  {"c_button1", "A6"},
-  {"z_button1", "A7"},
-  {"c_button2", "A2"},
-  {"z_button2", "A3"},
-  {"shrebutton", "A8"}
+  {"accx1", A5},
+  {"accy1", A4},
+  {"accx2", A1},
+  {"accy2", A0},
+  {"c_button1", A6},
+  {"z_button1", A7},
+  {"c_button2", A2},
+  {"z_button2", A3},
+  {"shrebutton", A8}
 };
 
-std::map<std::string,std::string> m_PWMpins =
+std::map<std::string,uint8_t> m_PWMpins =
 {
   {"PWM1", 2},
   {"PWM2", 3},
@@ -137,8 +137,8 @@ int LeftReleased, RightReleased;
 
 class Contr {
   protected:
-    uint8_t CENTER;
-    uint8_t MARGIN;
+    static uint8_t CENTER;// = 127; // just a default value, will be overridden by derived class
+    static uint8_t MARGIN; //= 50; // just a default value, will be overridden by derived class
     const uint8_t MIN = 5;
     const uint8_t MAX = 130;
 
@@ -210,11 +210,11 @@ class Contr {
     }
     // method has optional argument c to check whether a
     // exceeds value b minus optional margin so on negative side of defined margin
-    bool is_below_margin(int a, int center = CENTER, int margin = MARGIN)) {
+    bool is_below_margin(int a, int center = CENTER, int margin = MARGIN) {
       return (a < (center - margin));
     }
 
-    bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN)) {
+    bool exceeds_neutral_range(int a, int center = CENTER, int margin = MARGIN) {
       return (a < (center - margin) || a > (center + margin));
     }
 
@@ -243,19 +243,19 @@ class Contr {
           leftRing.show();
           break;
         case RED:
-          (is_above_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+          (is_above_margin(accx[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
           digitalWrite(m_ps4pins["optbutton"], writeout);
           Abuffer[9] = writebuffer;
 
-          (is_below_margin(accx[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+          (is_below_margin(accx[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
           digitalWrite(m_analogpins["shrebutton"], writeout);
           Abuffer[3] = writebuffer;
 
-          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+          (is_above_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
           digitalWrite(m_ps4pins["psbutton"], writeout);  // PS
           Abuffer[6] = writebuffer;
 
-          (is_below_margin(accy[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+          (is_below_margin(accy[0])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
           digitalWrite(m_ps4pins["joyLXax3"] , writeout);  // Z-as  ?? pin 5 = joyLXax3
           Abuffer[0] = writebuffer;
 
@@ -266,20 +266,20 @@ class Contr {
           leftRing.show();
           break;
         case BLUE:
-          (is_above_margin(accx[0])) ? (writeout  = HIGH; writeout1 = LOW; writebuffer = MAX;) : (writeout  = LOW; writeout1 = HIGH; writebuffer = MIN;);
+          (is_above_margin(accx[0])) ? (writeout  = HIGH,writeout1 = LOW, writebuffer = MAX) : (writeout  = LOW, writeout1 = HIGH, writebuffer = MIN);
           digitalWrite(m_ps4pins["l1button5"], writeout);
           digitalWrite(26, writeout1);
           Abuffer[9] = writebuffer;
 
-          (is_below_margin(accx[0])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+          (is_below_margin(accx[0])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
           digitalWrite(m_ps4pins["l1button5"], writeout);
           Abuffer[3] = writebuffer;
 
-          (is_above_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = HIGH; writebuffer = MIN;);
+          (is_above_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
           digitalWrite(m_ps4pins["sqbutton"], writeout);
           Abuffer[6] = writebuffer;
 
-          (is_below_margin(accy[0])) ? (writeout  = LOW; writebuffer = MAX;) : (writeout  = LOW; writebuffer = MIN;);
+          (is_below_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
           digitalWrite(m_ps4pins["circbutton"], writeout);
           Abuffer[0] = writebuffer;
 
@@ -297,11 +297,11 @@ class Contr {
         case GREEN:
           //   analogWrite(6, 127);  // axis 3
           //    analogWrite(7, 127);  // axis 4
-
-          (is_above_margin(accx[1], margin=80) || is_below_margin(accx[1], margin=80)) ? (writeout  = accx[1]) : (writeout  = 127);
+          int tempmargin = 80;
+          (is_above_margin(accx[1], tempmargin) || is_below_margin(accx[1], tempmargin)) ? (writeout  = accx[1]) : (writeout  = 127);
           analogWrite(m_PWMpins["PWM4"],writeout);
 
-          (is_above_margin(accy[1], margin=80) || is_below_margin(accy[1], margin=80)) ? (writeout  = accy[1]) : (writeout  = 127);
+          (is_above_margin(accy[1], tempmargin) || is_below_margin(accy[1], tempmargin)) ? (writeout  = accy[1]) : (writeout  = 127);
           analogWrite(m_PWMpins["PWM4"],writeout);
 
          if(exceeds_neutral_range(accx[1]) || exceeds_neutral_range(accy[1])) {
@@ -323,11 +323,11 @@ class Contr {
         (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
         digitalWrite(m_ps4pins["r2button"], writeout);
 
-        (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW; writebuffer = MAX;) : (writeout = HIGH; writebuffer = MIN;);
+        (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
         digitalWrite(m_ps4pins["circbutton"], writeout);
         Bbuffer[9] = writebuffer;
 
-        (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH; writebuffer = MAX;) : (writeout  = MIN; writebuffer = MIN;);
+        (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = MIN, writebuffer = MIN);
         digitalWrite(m_ps4pins["r1button6"] , writeout);
         Bbuffer[7] = writebuffer;
         Bbuffer[8] = writebuffer;
@@ -526,13 +526,9 @@ class Nunchuckcontr : protected Contr {
     const uint8_t NUNCHUCK_X_OFFSET = 0;
     const uint8_t NUNCHUCK_Y_OFFSET = 0;
   public:
-      // make paramterized constructor
-    Nunchuckcontr(uint8_t pinLED) {
+    Nunchuckcontr() {
       CENTER = 127;
       MARGIN = 16;
-      // constructor
-      //this->pinLED = pinLED;
-      //pinMode(pinLED, OUTPUT);
     }
 
   // destructor
@@ -541,14 +537,15 @@ class Nunchuckcontr : protected Contr {
     }
     // setup function
     void init() {
-      Wire.setClock(10000) ;
+      NunchuckFunctions::Wire.setClock(10000) ;
       pinMode(20, INPUT_PULLUP);
       pinMode(21, INPUT_PULLUP);
-      selectNunchuckChannel(0);
-      nunchuck_init();  // send the initilization handshake
-      selectNunchuckChannel(1);
-      nunchuck_init();  // send the initilization handshake
+      NunchuckFunctions::selectNunchuckChannel(0);
+      NunchuckFunctions::nunchuck_init();  // send the initilization handshake
+      NunchuckFunctions::selectNunchuckChannel(1);
+      NunchuckFunctions::nunchuck_init();  // send the initilization handshake
     }
+    /*
     void selectNunchuckChannel(int channel) {
       if (channel == 1) channel = 5;
       else channel = 4;
@@ -557,18 +554,18 @@ class Nunchuckcontr : protected Contr {
       Wire.write(channel);// sends memory address
       Wire.endTransmission();// stop transmitting
     }
-
+*/
     // loop function
     void readInput() {
       // read both nunchucks
       for (int n = 0; n < 2; n++) {
-        selectNunchuckChannel(n);
+        NunchuckFunctions::selectNunchuckChannel(n);
         delay(10);
-        if (nunchuck_get_data()) {
-          accx[n] = (int)nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-          accy[n] = (int)nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-          c_button[n] = (int)nunchuck_cbutton();
-          z_button[n] = (int)nunchuck_zbutton();
+        if (NunchuckFunctions::nunchuck_get_data()) {
+          accx[n] = (int)NunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+          accy[n] = (int)NunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+          c_button[n] = (int)NunchuckFunctions::nunchuck_cbutton();
+          z_button[n] = (int)NunchuckFunctions::nunchuck_zbutton();
         }
       }
     }
@@ -578,13 +575,12 @@ class Modps4contr : protected Contr {
   private:
   public:
 
-  Modps4contr {
+  Modps4contr() {
     CENTER = 127;
     MARGIN = 50;
-
   }
 
-  ~Mmodps4contr {
+  ~Modps4contr() {
 
   }
 
@@ -605,18 +601,18 @@ class Modps4contr : protected Contr {
 };
 
 
-
+Contr *controller = NULL;
 // setup is like int main()
 void setup() {
 #ifdef DEBUG
   Serial.begin(115200);   // debug info to usb serial
 #endif
   delay(20);        // wait for the nunchuck to be powered up
-
+  // empty object for null-checking
   // call init()
-  if (dv == NUNCHUCK) {
+  if(dv == NUNCHUCK) {
     Nunchuckcontr controller;
-  } else {
+  }else {
     Modps4contr controller;
   }
 
@@ -626,27 +622,27 @@ void setup() {
 void loop() {
   if (millis() > loopTime + 19) { // run at 10 Hz
     loopTime = millis();
-
-
+      if(!controller) {
+        controller -> operate();
+      }
     }
 
-#ifdef DEBUG
-    // debug code to the USB serial
-    Serial.print(accx[0]);
-    Serial.print("\t");
-    Serial.print(accy[0]);
-    Serial.print("\t");
-    Serial.print(accx[1]);
-    Serial.print("\t");
-    Serial.print(accy[1]);
-    Serial.print("\t");
-    Serial.print(z_button[0]);
-    Serial.print("\t");
-    Serial.print(z_button[1]);
-    Serial.print("\t");
-    Serial.print(c_button[0]);
-    Serial.print("\t");
-    Serial.println(c_button[1]);
-#endif
+    #ifdef DEBUG
+        // debug code to the USB serial
+        Serial.print(accx[0]);
+        Serial.print("\t");
+        Serial.print(accy[0]);
+        Serial.print("\t");
+        Serial.print(accx[1]);
+        Serial.print("\t");
+        Serial.print(accy[1]);
+        Serial.print("\t");
+        Serial.print(z_button[0]);
+        Serial.print("\t");
+        Serial.print(z_button[1]);
+        Serial.print("\t");
+        Serial.print(c_button[0]);
+        Serial.print("\t");
+        Serial.println(c_button[1]);
+    #endif
   }
-}
