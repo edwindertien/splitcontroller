@@ -54,21 +54,32 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
-#include "NunchuckFunctions.h"
+
 #include <iostream>
 #include <map>
+
+#define NUNCHCK 1
 
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
 NunchuckFunctions nunchuckFunctions;
 
+const Device dv;
+
+#if NUNCHCK > 0
+  #include "NunchuckFunctions.h"
+  dv = NUNCHUCK;
+#else
+  dv = PS4CONTR;
+#endif
+
 enum Device {NUNCHUCK, PS4CONTR};
 
 enum Mode {GREEN, RED, BLUE};
 
 // Device is constant because the device won't change during use.
-const Device dv = PS4CONTR;
+
 
 
 const uint8_t greenLED = 13;
@@ -291,8 +302,6 @@ public:
 
       switch(LeftMode) {
         case GREEN:
-          //   analogWrite(6, 127);  // axis 3
-          //    analogWrite(7, 127);  // axis 4
           int tempmargin = 80;
           (is_above_margin(accx[1], tempmargin) || is_below_margin(accx[1], tempmargin)) ? (writeout  = accx[1]) : (writeout  = 127);
           analogWrite(m_PWMpins["PWM4"],writeout);
@@ -302,10 +311,7 @@ public:
 
          if(exceeds_neutral_range(accx[1]) || exceeds_neutral_range(accy[1])) {
            directionB = ((int)(6.3 * (3.1415 + atan2(accx[1] - CENTER, accy[1] - CENTER)) / 3.1415));
-         } else {    // can be removed because directionB = -1 from line 289?
-           directionB = -1;
          }
-
          (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
          digitalWrite(m_ps4pins["sqbutton"], writeout);
 
@@ -323,51 +329,28 @@ public:
         digitalWrite(m_ps4pins["circbutton"], writeout);
         Bbuffer[9] = writebuffer;
 
-        (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = MIN, writebuffer = MIN);
+        (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
         digitalWrite(m_ps4pins["r1button6"] , writeout);
         Bbuffer[7] = writebuffer;
         Bbuffer[8] = writebuffer;
 
-         if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN) {
-           digitalWrite(m_ps4pins["r1button6"] , HIGH);  // R1
-           Bbuffer[7] = MAX;
-           Bbuffer[8] = MAX;
-         }
-         else {
-           digitalWrite(m_ps4pins["r1button6"], LOW);  // R1
-           Bbuffer[7] = MIN;
-           Bbuffer[8] = MIN;
-         }
-         if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN) {
-           digitalWrite(m_ps4pins["l1button5"], HIGH);  // L1
-           Bbuffer[4] = MAX;
-           Bbuffer[5] = MAX;
-         }
-         else {
-           digitalWrite(m_ps4pins["l1button5"], LOW);  // L1
-           Bbuffer[5] = MIN;
-           Bbuffer[4] = MIN;
-         }
-         if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN) {
-           digitalWrite(m_ps4pins["r2button"], LOW);  // R2
-           Bbuffer[10] = MAX;
-           Bbuffer[11] = MAX;
-         }
-         else {
-           if(c_button[1]==0)digitalWrite(34, HIGH);  // R2
-           Bbuffer[10] = MIN;
-           Bbuffer[11] = MIN;
-         }
-         if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN) {
-           digitalWrite(m_ps4pins["l2button"], LOW);  // L2
-           Bbuffer[1] = MAX;
-           Bbuffer[2] = MAX;
-         }
-         else {
-           digitalWrite(m_ps4pins["l2button"], HIGH);  // L2
-           Bbuffer[1] = MIN;
-           Bbuffer[2] = MIN;
-         }
+        (is_below_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout = HIGH, writebuffer = MAX) : (writeout = LOW, writebuffer = MIN);
+        digitalWrite(m_ps4pins["l1button5"], writeout);
+        Bbuffer[4] = writebuffer;
+        Bbuffer[5] = writebuffer;
+
+        (is_above_margin(accx[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        digitalWrite(m_ps4pins["r2button"], writeout);
+        Bbuffer[10] = writebuffer;
+        Bbuffer[11] = writebuffer;
+
+        (is_below_margin(accx[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        digitalWrite(m_ps4pins["l2button"], writeout);
+        Bbuffer[1] = writebuffer;
+        Bbuffer[2] = writebuffer;
+
+        (is_below_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+
          if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
            digitalWrite(m_ps4pins["sqbutton"], LOW);  // vierkantje
            Bbuffer[3] = MAX;
@@ -472,48 +455,46 @@ public:
       }
 
 
-          ///// NUNCHUCK 1 button switch ///////
-          if (LeftReleased == 0) {
-            if (c_button[0] == 1 && LeftMode == GREEN) {
-              LeftMode = RED;
-            }
-            else if (c_button[0] == 1 && LeftMode == RED) {
-              LeftMode = BLUE;
-            }
-            else if (c_button[0] == 1 && LeftMode == BLUE) {
-              LeftMode = GREEN;
-            }
-       /*     if (c_button[0] == 1 && LeftMode != 2 ) {
-              LeftMode = BLUE;
-            }
-            else if (c_button[0] == 1 && LeftMode != 0) {
-              LeftMode = GREEN;
-            }*/
-          }
+      ///// NUNCHUCK 1 button switch ///////
+      if (LeftReleased == 0) {
+        if (c_button[0] == 1 && LeftMode == GREEN) {
+          LeftMode = RED;
+        }
+        else if (c_button[0] == 1 && LeftMode == RED) {
+          LeftMode = BLUE;
+        }
+        else if (c_button[0] == 1 && LeftMode == BLUE) {
+          LeftMode = GREEN;
+        }
+   /*     if (c_button[0] == 1 && LeftMode != 2 ) {
+          LeftMode = BLUE;
+        }
+        else if (c_button[0] == 1 && LeftMode != 0) {
+          LeftMode = GREEN;
+        }*/
+      }
           LeftReleased =  c_button[0];
 
-          ///// NUNCHUCK 2 button switch ///////
-          if (RightReleased == 0) {
-            if (z_button[1] == 1 && RightMode == 0) {
-              RightMode = RED;
-            }
-            else if (z_button[1] == 1 && RightMode ==1) {
-              RightMode = BLUE;
-            }
-            else if (z_button[1] == 1 && RightMode ==2) {
-              RightMode = GREEN;
-            }
-            /*
-            if (c_button[1] == 1 && RightMode != 2 ) {
-              RightMode = BLUE;
-            }
-            else if (c_button[1] == 1 && RightMode != 0) {
-              RightMode = GREEN;
-            }*/
-          }
-          RightReleased =  z_button[1];
-
-
+      ///// NUNCHUCK 2 button switch ///////
+      if (RightReleased == 0) {
+        if (z_button[1] == 1 && RightMode == 0) {
+          RightMode = RED;
+        }
+        else if (z_button[1] == 1 && RightMode ==1) {
+          RightMode = BLUE;
+        }
+        else if (z_button[1] == 1 && RightMode ==2) {
+          RightMode = GREEN;
+        }
+        /*
+        if (c_button[1] == 1 && RightMode != 2 ) {
+          RightMode = BLUE;
+        }
+        else if (c_button[1] == 1 && RightMode != 0) {
+          RightMode = GREEN;
+        }*/
+      }
+      RightReleased =  z_button[1];
     }
 };
 
@@ -533,27 +514,20 @@ class Nunchuckcontr : protected Contr {
     }
     // setup function
     void init() {
-      nunchuckFunctions::Wire.setClock(10000) ;
-      pinMode(20, INPUT_PULLUP);
-      pinMode(21, INPUT_PULLUP);
-      nunchuckFunctions::selectNunchuckChannel(0);
-      nunchuckFunctions::nunchuck_init();  // send the initilization handshake
-      nunchuckFunctions::selectNunchuckChannel(1);
-      nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+      #if NUNCHCK > 0
+        nunchuckFunctions::Wire.setClock(10000) ;
+        pinMode(20, INPUT_PULLUP);
+        pinMode(21, INPUT_PULLUP);
+        nunchuckFunctions::selectNunchuckChannel(0);
+        nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+        nunchuckFunctions::selectNunchuckChannel(1);
+        nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+      #endif
     }
-    /*
-    void selectNunchuckChannel(int channel) {
-      if (channel == 1) channel = 5;
-      else channel = 4;
-      Wire.begin();                // join i2c bus as master
-      Wire.beginTransmission(0b1110000);// transmit to device 0x52
-      Wire.write(channel);// sends memory address
-      Wire.endTransmission();// stop transmitting
-    }
-*/
     // loop function
     void readInput() {
       // read both nunchucks
+      #if NUNCHCK > 0
       for (int n = 0; n < 2; n++) {
         nunchuckFunctions::selectNunchuckChannel(n);
         delay(10);
@@ -564,6 +538,7 @@ class Nunchuckcontr : protected Contr {
           z_button[n] = (int)nunchuckFunctions::nunchuck_zbutton();
         }
       }
+      #endif
     }
 };
 
