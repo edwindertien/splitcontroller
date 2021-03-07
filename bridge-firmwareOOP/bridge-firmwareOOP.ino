@@ -47,23 +47,30 @@
 
  **************************************************************/
 
- //  arduino-cli compile --fqbn arduino:avr:nano bridge-firmwareOOP
-// arduino:avr:uno arduino:avr:diecimila  arduino:avr:mega  arduino:avr:leonardo
+ //  arduino-cli compile --fqbn arduino:sam:arduino_due_x_dbg bridge-firmwareOOP &>> debuglog.txt
+// arduino-cli upload -p /dev/ttyACM0 -b arduino:sam:arduino_due_x_dbg -i <sketchname>.arduino.sam.arduino_due_x_dbg.bin
+//arduino-cli compile  --fqbn arduino:sam:arduino_due_x_dbg bridge-firmwareOOP
+//arduino-cli compile --fqbn arduino:sam:arduino_due_x bridge-firmwareOOP
+
 //#define NUNCHUCK (1)
 //#define DEBUG (1)
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
+#include "NunchuckFunctions.h"
 
 #include <iostream>
 #include <map>
 
+// define 1 if nunchuck, 0 if PS4 mod
 #define NUNCHCK 1
 
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
 NunchuckFunctions nunchuckFunctions;
+
+enum Device {NUNCHUCK, PS4CONTR};
 
 const Device dv;
 
@@ -74,13 +81,7 @@ const Device dv;
   dv = PS4CONTR;
 #endif
 
-enum Device {NUNCHUCK, PS4CONTR};
-
 enum Mode {GREEN, RED, BLUE};
-
-// Device is constant because the device won't change during use.
-
-
 
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
@@ -123,6 +124,7 @@ std::map<std::string,uint8_t> m_analogpins =
   {"shrebutton", A8}
 };
 
+// joy out X, Y, Z
 std::map<std::string,uint8_t> m_PWMpins =
 {
   {"PWM1", 2},
@@ -140,7 +142,7 @@ unsigned char Bbuffer[12];
 unsigned char Cbuffer[12];
 unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
-int LeftReleased, RightReleased;
+boolean LeftReleased, RightReleased;
 
 class Contr {
   protected:
@@ -325,7 +327,8 @@ public:
         (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
         digitalWrite(m_ps4pins["r2button"], writeout);
 
-        (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        // original definition was probably wrong: (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
+        (is_above_margin(accx[1]) && is_above_margin(accy[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
         digitalWrite(m_ps4pins["circbutton"], writeout);
         Bbuffer[9] = writebuffer;
 
@@ -351,30 +354,20 @@ public:
 
         (is_below_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
 
-         if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN) {
-           digitalWrite(m_ps4pins["sqbutton"], LOW);  // vierkantje
-           Bbuffer[3] = MAX;
-         }
-         else {
-           digitalWrite(m_ps4pins["sqbutton"], HIGH);
-           Bbuffer[3] = MIN;
-         }
-         if (accy[1] > CENTER + MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
-           digitalWrite(m_ps4pins["tributton"], LOW);  // driehoekje
-           Bbuffer[6] = MAX;
-         }
-         else {
-           digitalWrite(m_ps4pins["tributton"], HIGH);
-           Bbuffer[6] = MIN;
-         }
-         if (accy[1] < CENTER - MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN ) {
-           digitalWrite(m_ps4pins["xbutton"], LOW);  // kruisje
-           Bbuffer[0] = MAX;
-         }
-         else {
-           if(z_button[0]==0) digitalWrite(m_ps4pins["xbutton"], HIGH);
-           Bbuffer[0] = MIN;
-         }
+        // original definition was probably wrong: if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
+        (is_below_margin(accx[1]) && is_above_margin(accy[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        digitalWrite(m_ps4pins["sqbutton"], writeout);
+        Bbuffer[3] = writebuffer;
+
+        // original definition was probably wrong: if (accy[1] > CENTER + MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN )
+        (is_above_margin(accy[1]) && is_above_margin(accx[1]) && is_below_margin(accx[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        digitalWrite(m_ps4pins["tributton"], writeout);
+        Bbuffer[6] = writebuffer;
+
+        // original definition was probably wrong: if (accy[1] < CENTER - MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN )
+        (is_below_margin(accy[1]) && is_above_margin(accx[1]) && is_below_margin(accx[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
+        digitalWrite(m_ps4pins["xbutton"], writeout);
+        Bbuffer[0] = writebuffer;
 
          for (int i = 0; i < 12; i++) {
            rightRing.setPixelColor(i, rightRing.Color(Bbuffer[i], 0, 0));
@@ -382,7 +375,8 @@ public:
          rightRing.show();
          break;
        case BLUE:
-         if (Rreleased == 0) {
+         if (Rreleased == false) {
+
            if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
              digitalWrite(m_ps4pins["r1button6"], HIGH);  // R1
              R1state = 1;
@@ -456,7 +450,7 @@ public:
 
 
       ///// NUNCHUCK 1 button switch ///////
-      if (LeftReleased == 0) {
+      if (LeftReleased == false) {
         if (c_button[0] == 1 && LeftMode == GREEN) {
           LeftMode = RED;
         }
@@ -476,7 +470,7 @@ public:
           LeftReleased =  c_button[0];
 
       ///// NUNCHUCK 2 button switch ///////
-      if (RightReleased == 0) {
+      if (RightReleased == false) {
         if (z_button[1] == 1 && RightMode == 0) {
           RightMode = RED;
         }
@@ -516,6 +510,7 @@ class Nunchuckcontr : protected Contr {
     void init() {
       #if NUNCHCK > 0
         nunchuckFunctions::Wire.setClock(10000) ;
+        // 20 and 21 are probably clock nunchucks
         pinMode(20, INPUT_PULLUP);
         pinMode(21, INPUT_PULLUP);
         nunchuckFunctions::selectNunchuckChannel(0);
@@ -559,7 +554,7 @@ class Modps4contr : protected Contr {
 
   }
 
-  void readAnalogInput() {
+  void readInput() {
     accx[0] = map(analogRead(m_analogpins["accx1"]), 0, 832, 0, 255);
     accy[0] = map(analogRead(m_analogpins["accy1"]), 0, 832, 0, 255);
     accx[1] = map(analogRead(m_analogpins["accx2"]), 0, 832, 0, 255);
@@ -586,14 +581,13 @@ void setup() {
   }else {
     Modps4contr controller;
   }
-
-
 }
 
 void loop() {
   if (millis() > loopTime + 19) { // run at 10 Hz
     loopTime = millis();
-      if(!controller) {
+      if(controller) {
+        controller -> readInput();
         controller -> operate();
       }
     }

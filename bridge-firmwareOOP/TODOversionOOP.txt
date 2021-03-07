@@ -23,7 +23,11 @@ void init() {
 
   what are pin # 20 and 21 for?
 
+// analog data == 0 or 1?
 
-// I don't understand the one below. accy > center MINUS margin and accy < center PLUS margin?
 
-(accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
+// digital read of analog data without map?
+  c_button[0] = !digitalRead(m_analogpins["c_button1"]);
+  z_button[0] = !digitalRead(m_analogpins["z_button1"]);
+  c_button[1] = !digitalRead(m_analogpins["c_button2"]);
+  z_button[1] = !digitalRead(m_analogpins["z_button2"]);
