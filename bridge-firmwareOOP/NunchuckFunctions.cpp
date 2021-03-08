@@ -13,27 +13,40 @@
 #include <Wire.h>
 
 class NunchuckFunctions {
-
 public:
 
   uint8_t nunchuck_buf[6];   // array to store nunchuck data,
 
   // initialize the I2C system, join the I2C bus,
   // and tell the nunchuck we're talking to it
-  void nunchuck_init(void);
+  void nunchuck_init()
+  {
+      Wire.begin();                // join i2c bus as master
+      Wire.beginTransmission(0x52);// transmit to device 0x52
+      Wire.write(0x40);// sends memory address
+      Wire.write(0x00);// sends sent a zero.
+      Wire.endTransmission();// stop transmitting
+  }
 
   // Send a request for data to the nunchuck
-  void nunchuck_send_request(void);
-
+  void nunchuck_send_request()
+  {
+      Wire.beginTransmission(0x52);// transmit to device 0x52
+      Wire.write(0x00);// sends one byte
+      Wire.endTransmission();// stop transmitting
+  }
 
   // Encode data to format that most wiimote drivers except
   // only needed if you use one of the regular wiimote drivers
-  char nunchuk_decode_byte (char x);
+  char nunchuk_decode_byte (char x)
+  {
+      x = (x ^ 0x17) + 0x17;
+      return x;
+  }
+
   // Receive data back from the nunchuck,
   // returns 1 on successful read. returns 0 on failure
-  int nunchuck_get_data(void) const {if (cnt >= 5) {return 1;   // success
-  }
-  return 0; //failure}
+  int nunchuck_get_data()
   {
       int cnt=0;
       Wire.requestFrom (0x52, 6);// request data from nunchuck
@@ -50,9 +63,19 @@ public:
       return 0; //failure
   }
 
-  void selectNunchuckChannel(int channel) ;
-
-
+  void selectNunchuckChannel(int channel) {
+    if (channel == 1) channel = 5;
+    else channel = 4;
+    Wire.begin();                // join i2c bus as master
+    Wire.beginTransmission(0b1110000);// transmit to device 0x52
+    Wire.write(channel);// sends memory address
+    Wire.endTransmission();// stop transmitting
+  }
+  // Print the input data we have recieved
+  // accel data is 10 bits long
+  // so we read 8 bits, then we have to add
+  // on the last 2 bits.  That is why I
+  // multiply them by 2 * 2
   void nunchuck_print_data()
   {
       static int i=0;

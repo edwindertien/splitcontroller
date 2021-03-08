@@ -1,0 +1,67 @@
+
+Error during build: incorrect FQBN: invalid fqbn: arduino:avr
+In file included from /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:78:0:
+/tmp/arduino-sketch-9F7D33C01F4DD5B8D5CF21E7C7474456/sketch/NunchuckFunctions.h:15:7: error: redefinition of 'class NunchuckFunctions'
+ class NunchuckFunctions {
+       ^~~~~~~~~~~~~~~~~
+In file included from /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:60:0:
+/tmp/arduino-sketch-9F7D33C01F4DD5B8D5CF21E7C7474456/sketch/NunchuckFunctions.h:15:7: note: previous definition of 'class NunchuckFunctions'
+ class NunchuckFunctions {
+       ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:79:3: error: 'dv' does not name a type
+   dv = NUNCHUCK;
+   ^~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:124:18: error: 'A8' was not declared in this scope
+   {"shrebutton", A8}
+                  ^~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:124:18: note: suggested alternative: 'A7'
+   {"shrebutton", A8}
+                  ^~
+                  A7
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:125:1: error: could not convert '{{"accx1", A5}, {"accy1", A4}, {"accx2", A1}, {"accy2", A0}, {"c_button1", A6}, {"z_button1", A7}, {"c_button2", A2}, {"z_button2", A3}, {"shrebutton", <expression error>}}' from '<brace-enclosed initializer list>' to 'std::map<std::basic_string<char>, unsigned char>'
+ };
+ ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::init()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:512:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::Wire.setClock(10000) ;
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:516:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::selectNunchuckChannel(0);
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:517:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:518:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::selectNunchuckChannel(1);
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:519:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::readInput()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:527:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         nunchuckFunctions::selectNunchuckChannel(n);
+         ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:529:13: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+         if (nunchuckFunctions::nunchuck_get_data()) {
+             ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:530:26: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+           accx[n] = (int)nunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+                          ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:531:26: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+           accy[n] = (int)nunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+                          ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:532:30: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+           c_button[n] = (int)nunchuckFunctions::nunchuck_cbutton();
+                              ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:533:30: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
+           z_button[n] = (int)nunchuckFunctions::nunchuck_zbutton();
+                              ^~~~~~~~~~~~~~~~~
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In function 'void loop()':
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:590:33: error: 'void Contr::readInput()' is protected within this context
+         controller -> readInput();
+                                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:211:10: note: declared protected here
+     void readInput() {
+          ^~~~~~~~~
+
+Error during build: exit status 1
