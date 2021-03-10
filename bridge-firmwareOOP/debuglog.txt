@@ -1,105 +1,24 @@
 WARNING: library ArduinoSTL claims to run on avr, samd architecture(s) and may be incompatible with your current board which runs on sam architecture(s).
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:75:14: error: uninitialized const 'dv' [-fpermissive]
- const Device dv;
-              ^
-In file included from /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:78:0:
-/tmp/arduino-sketch-9F7D33C01F4DD5B8D5CF21E7C7474456/sketch/NunchuckFunctions.h:15:7: error: redefinition of 'class NunchuckFunctions'
- class NunchuckFunctions {
-       ^
-In file included from /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:60:0:
-/tmp/arduino-sketch-9F7D33C01F4DD5B8D5CF21E7C7474456/sketch/NunchuckFunctions.h:15:7: error: previous definition of 'class NunchuckFunctions'
- class NunchuckFunctions {
-       ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:79:3: error: 'dv' does not name a type
-   dv = NUNCHUCK;
-   ^
 /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Contr::init()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:24: error: expected unqualified-id before '[' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:24: error: expected unqualified-id before '[' token
        for (const auto& [key, pinnr] : m_ps4pins) {
                         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:24: error: expected ';' before '[' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:25: error: 'key' was not declared in this scope
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:24: error: expected ';' before '[' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:25: error: 'key' was not declared in this scope
        for (const auto& [key, pinnr] : m_ps4pins) {
                          ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:30: error: 'pinnr' was not declared in this scope
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:30: error: 'pinnr' was not declared in this scope
        for (const auto& [key, pinnr] : m_ps4pins) {
                               ^
 /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In lambda function:
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected '{' before ':' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected '{' before ':' token
        for (const auto& [key, pinnr] : m_ps4pins) {
                                      ^
 /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Contr::init()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected ';' before ':' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected primary-expression before ':' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected ')' before ':' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected primary-expression before ':' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:174:37: error: expected ';' before ':' token
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Contr::operate()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:254:14: error: jump to case label [-fpermissive]
-         case RED:
-              ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:236:15: error:   crosses initialization of 'int directionA'
-           int directionA = -1;
-               ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:277:14: error: jump to case label [-fpermissive]
-         case BLUE:
-              ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:236:15: error:   crosses initialization of 'int directionA'
-           int directionA = -1;
-               ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:326:13: error: jump to case label [-fpermissive]
-        case RED:
-             ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:15: error:   crosses initialization of 'int tempmargin'
-           int tempmargin = 80;
-               ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:377:13: error: jump to case label [-fpermissive]
-        case BLUE:
-             ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:307:15: error:   crosses initialization of 'int tempmargin'
-           int tempmargin = 80;
-               ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::init()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:512:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::Wire.setClock(10000) ;
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:516:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::selectNunchuckChannel(0);
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:517:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::nunchuck_init();  // send the initilization handshake
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:518:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::selectNunchuckChannel(1);
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:519:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::nunchuck_init();  // send the initilization handshake
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In member function 'void Nunchuckcontr::readInput()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:527:9: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         nunchuckFunctions::selectNunchuckChannel(n);
-         ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:529:13: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-         if (nunchuckFunctions::nunchuck_get_data()) {
-             ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:530:26: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-           accx[n] = (int)nunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-                          ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:531:26: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-           accy[n] = (int)nunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-                          ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:532:30: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-           c_button[n] = (int)nunchuckFunctions::nunchuck_cbutton();
-                              ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:533:30: error: 'nunchuckFunctions' is not a class, namespace, or enumeration
-           z_button[n] = (int)nunchuckFunctions::nunchuck_zbutton();
-                              ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino: In function 'void loop()':
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:211:10: error: 'void Contr::readInput()' is protected
-     void readInput() {
-          ^
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:590:33: error: within this context
-         controller -> readInput();
-                                 ^
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected ';' before ':' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected primary-expression before ':' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected ')' before ':' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected primary-expression before ':' token
+/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:172:37: error: expected ';' before ':' token
 
 Error during build: exit status 1

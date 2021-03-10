@@ -57,7 +57,6 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
-#include "NunchuckFunctions.h"
 
 #include <iostream>
 #include <map>
@@ -68,17 +67,16 @@
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
-NunchuckFunctions nunchuckFunctions;
+
 
 enum Device {NUNCHUCK, PS4CONTR};
 
-const Device dv;
-
 #if NUNCHCK > 0
-  #include "NunchuckFunctions.h"
-  dv = NUNCHUCK;
+  #include <NunchuckFunctions.h>
+  NunchuckFunctions* nunchuckFunctions = new NunchuckFunctions;
+  const Device dv = NUNCHUCK;
 #else
-  dv = PS4CONTR;
+  const Device dv = PS4CONTR;
 #endif
 
 enum Mode {GREEN, RED, BLUE};
@@ -208,9 +206,7 @@ class Contr {
       rightRing.show();
 
     }
-    void readInput() {
-       //override by derived
-    }
+
 
     // method has optional argument c to check whether a
     // exceeds value b plus optional margin so on positive side of defined margin
@@ -227,13 +223,18 @@ class Contr {
       return (a < (center - margin) || a > (center + margin));
     }
 public:
+  void readInput() {
+     //override by derived
+  }
+
     void operate() {
       int writebuffer;
       int writeout;
       int writeout1;
+      int directionA;
       switch(LeftMode) {
         case GREEN:
-          int directionA = -1;
+          directionA = -1;
           analogWrite(m_ps4pins["joyRYax1"], accx[0]); // axis 1
           analogWrite(m_ps4pins["joyRXax2"], 255-accy[0]); // axis 2
           // visualisation
@@ -301,10 +302,11 @@ public:
       }
 
       int directionB = -1;
-
+      int tempmargin;
       switch(LeftMode) {
         case GREEN:
-          int tempmargin = 80;
+        {
+          tempmargin = 80;
           (is_above_margin(accx[1], tempmargin) || is_below_margin(accx[1], tempmargin)) ? (writeout  = accx[1]) : (writeout  = 127);
           analogWrite(m_PWMpins["PWM4"],writeout);
 
@@ -322,8 +324,10 @@ public:
            if (i == directionB)rightRing.setPixelColor(i, rightRing.Color(0, MAX, 0));
          }
          rightRing.show();
+       }
          break;
        case RED:
+       {
         (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
         digitalWrite(m_ps4pins["r2button"], writeout);
 
@@ -374,7 +378,9 @@ public:
          }
          rightRing.show();
          break;
+       }
        case BLUE:
+       {
          if (Rreleased == false) {
 
            if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
@@ -447,6 +453,7 @@ public:
          rightRing.show();
          break;
       }
+    }
 
 
       ///// NUNCHUCK 1 button switch ///////
@@ -509,14 +516,13 @@ class Nunchuckcontr : protected Contr {
     // setup function
     void init() {
       #if NUNCHCK > 0
-        nunchuckFunctions::Wire.setClock(10000) ;
         // 20 and 21 are probably clock nunchucks
         pinMode(20, INPUT_PULLUP);
         pinMode(21, INPUT_PULLUP);
-        nunchuckFunctions::selectNunchuckChannel(0);
-        nunchuckFunctions::nunchuck_init();  // send the initilization handshake
-        nunchuckFunctions::selectNunchuckChannel(1);
-        nunchuckFunctions::nunchuck_init();  // send the initilization handshake
+        nunchuckFunctions -> selectNunchuckChannel(0);
+        nunchuckFunctions -> nunchuck_init();  // send the initilization handshake
+        nunchuckFunctions -> selectNunchuckChannel(1);
+        nunchuckFunctions -> nunchuck_init();  // send the initilization handshake
       #endif
     }
     // loop function
@@ -524,13 +530,13 @@ class Nunchuckcontr : protected Contr {
       // read both nunchucks
       #if NUNCHCK > 0
       for (int n = 0; n < 2; n++) {
-        nunchuckFunctions::selectNunchuckChannel(n);
+        nunchuckFunctions -> selectNunchuckChannel(n);
         delay(10);
-        if (nunchuckFunctions::nunchuck_get_data()) {
-          accx[n] = (int)nunchuckFunctions::nunchuck_joyx() - NUNCHUCK_X_OFFSET;
-          accy[n] = (int)nunchuckFunctions::nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
-          c_button[n] = (int)nunchuckFunctions::nunchuck_cbutton();
-          z_button[n] = (int)nunchuckFunctions::nunchuck_zbutton();
+        if (nunchuckFunctions -> nunchuck_get_data()) {
+          accx[n] = (int)nunchuckFunctions -> nunchuck_joyx() - NUNCHUCK_X_OFFSET;
+          accy[n] = (int)nunchuckFunctions -> nunchuck_joyy() - NUNCHUCK_Y_OFFSET;
+          c_button[n] = (int)nunchuckFunctions -> nunchuck_cbutton();
+          z_button[n] = (int)nunchuckFunctions -> nunchuck_zbutton();
         }
       }
       #endif
@@ -566,9 +572,8 @@ class Modps4contr : protected Contr {
   }
 };
 
-
 Contr *controller = NULL;
-// setup is like int main()
+
 void setup() {
 #ifdef DEBUG
   Serial.begin(115200);   // debug info to usb serial
