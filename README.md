@@ -1,11 +1,15 @@
 # splitcontroller
 code and hardware files for a split level game controller
 
+<img src="pictures/controller1.png" alt="dual hand-held controller with bridge box picture(c)IDTV(2021)" width="300"/> 
+
 This project has been designed for a Duchenne patient who had progressive trouble operating his beloved regular PS4 controller. The original controller has been 'bridged' or patched by an Arduino Due (the PS4 controller works on 3.3V, so an Arduino with many inputs and outputs running at 3.3V is convenient). As new controller a split handheld system is used. This can be consisting of two Wii-nunchuck controllers or two custom 3D printed handheld controllers using (in this case) original PS4 joysticks. Currently this repository contains the following directories: 
   * bridge firmware: the firmware for the Arduino Due. Pinout is given in the header part of the code. The Wii-nunchuck functions are included in the code by Tod E. Kurt (2017) and modified for use on the DUE
   * remote arduino box: a simple laser cut 'sandwich' plate box containing a severely stripped-down ps4 controller, the arduino due and a 8000mAh powerbank. Included are some pictures and an svg file for cutting. Schematic drawing will follow. 
   * remote-modular ps4: an openSCAD script and printable STL files for a customisable hand-held design
   * remote-modular-switch: an openSCAD script and printable STL files for a customisable hand-held using the miniature nintendo-switch joystick
+
+<img src="pictures/controller2.png" alt="bridge box, picture(c)IDTV(2021)" width="300"/> 
 
 # bridge firmware
 This code is meant for an Arduino Due which is used to take input signals from two handheld controllers, such as Wii-nunchucks or custom build controllers wired to A0--A7, and parse these signals to a modified PS4 controller. 
