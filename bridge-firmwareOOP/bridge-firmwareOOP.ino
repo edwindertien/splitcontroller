@@ -164,12 +164,11 @@ class Contr {
       init();
     }
 
-    // this one private? would make sense, except it is parent class
     void init() {
       pinMode(m_ps4pins["greenLED"], OUTPUT); // greenLED 13
       pinMode(9, OUTPUT);
 
-      for (const auto& [key, pinnr] : m_ps4pins) {
+      for (auto const&[key, pinnr] : m_ps4pins) {
         pinMode(pinnr, OUTPUT);
         digitalWrite(pinnr, HIGH);
       }
@@ -303,7 +302,8 @@ public:
 
       int directionB = -1;
       int tempmargin;
-      switch(LeftMode) {
+      //RightMode
+      switch(RightMode) {
         case GREEN:
         {
           tempmargin = 80;
@@ -324,8 +324,9 @@ public:
            if (i == directionB)rightRing.setPixelColor(i, rightRing.Color(0, MAX, 0));
          }
          rightRing.show();
-       }
          break;
+       }
+
        case RED:
        {
         (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
@@ -467,12 +468,6 @@ public:
         else if (c_button[0] == 1 && LeftMode == BLUE) {
           LeftMode = GREEN;
         }
-   /*     if (c_button[0] == 1 && LeftMode != 2 ) {
-          LeftMode = BLUE;
-        }
-        else if (c_button[0] == 1 && LeftMode != 0) {
-          LeftMode = GREEN;
-        }*/
       }
           LeftReleased =  c_button[0];
 
@@ -487,13 +482,6 @@ public:
         else if (z_button[1] == 1 && RightMode ==2) {
           RightMode = GREEN;
         }
-        /*
-        if (c_button[1] == 1 && RightMode != 2 ) {
-          RightMode = BLUE;
-        }
-        else if (c_button[1] == 1 && RightMode != 0) {
-          RightMode = GREEN;
-        }*/
       }
       RightReleased =  z_button[1];
     }
