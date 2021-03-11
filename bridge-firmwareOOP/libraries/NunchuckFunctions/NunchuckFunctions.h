@@ -18,7 +18,7 @@ public:
 
   NunchuckFunctions();
 
-  uint8_t   nunchuck_buf[6];
+  extern uint8_t   nunchuck_buf[];
   void      nunchuck_init(void);
   void      nunchuck_send_request(void);
   char      nunchuk_decode_byte (char);

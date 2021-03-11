@@ -154,7 +154,19 @@ class Contr {
     unsigned char accy[2];
     unsigned char c_button[2];
     unsigned char z_button[2];
+/*
+    unsigned char& refAccxLeft = accx[0];
+    unsigned char& refAccxRight = accx[1];
 
+    unsigned char& refAccyLeft = accy[0];
+    unsigned char& refAccyRight = accy[1];
+
+    unsigned char& refCbuttonLeft = c_button[0];
+    unsigned char& refCbuttonRight = c_button[1];
+
+    unsigned char& refZbuttonLeft = z_button[0];
+    unsigned char& refZbuttonRight = z_button[1];
+*/
     // init modes
     Mode LeftMode = RED;
     Mode RightMode = RED;
@@ -168,9 +180,13 @@ class Contr {
       pinMode(m_ps4pins["greenLED"], OUTPUT); // greenLED 13
       pinMode(9, OUTPUT);
 
-      for (auto const&[key, pinnr] : m_ps4pins) {
-        pinMode(pinnr, OUTPUT);
-        digitalWrite(pinnr, HIGH);
+      std::map<std::string,uint8_t>::iterator it;
+
+      for (it = m_ps4pins.begin(); it != m_ps4pins.end(); it++)
+      {
+          pinMode(it->second, OUTPUT);
+          digitalWrite(it->second, HIGH);
+
       }
 
       digitalWrite(m_ps4pins["joyRZb11"], LOW); // hoog actief   4
