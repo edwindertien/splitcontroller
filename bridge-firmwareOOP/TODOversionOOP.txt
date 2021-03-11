@@ -4,22 +4,14 @@ arduino-cli compile --fqbn arduino:avr:diecimila bridge-firmwareOOP &>> debuglog
 
 TODO:
 
-There is a problem with "A8"
-/home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:116:18: note: suggested alternative: 'A7'
-   {"shrebutton", A8}
- Maybe I used the wrong arduino:avr ?
+readInput in operate();
 
-What is the meaning of:
-  boolean L1state, R1state, R2state, L2state, Rreleased;
-
-Why int, what does this do? (name suggests boolean, because 'released' can be either true or false):
-  int LeftReleased, RightReleased;
+W
 
 Rename elements of m_PWMpins:
-  e.g. "PWM1" doesn't say anything about what is connected to this pin. Couldn't derive this from original code yet.
+joy (nunchuck?) xyz
 
-Check OOP validation:
-  switch 'Mode' in class?
+
 
 int directionA  in case GREEN bij LeftMode, does A mean 'left'?
 
@@ -30,16 +22,6 @@ void init() {
 
   what are pin # 20 and 21 for?
 
+switch leftmode, rightmode
 
-// I don't understand the one below. accy > center MINUS margin and accy < center PLUS margin?
-
-(accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
-
-
-
-// below: 'else' can be removed? (LeftMode GREEN)
-int directionB = -1;
-......
-} else {    // can be removed because directionB = -1 from line 289?
-  directionB = -1;
-}
+Rezip, compile and install NunchuckFunctions library
