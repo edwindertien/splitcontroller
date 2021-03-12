@@ -15,10 +15,8 @@
 #include <Wire.h>
 #include "NunchuckFunctions.h"
 
-
-
 NunchuckFunctions::NunchuckFunctions() {
-  uint8_t NunchuckFunctions::nunchuck_buf[6];   // array to store nunchuck data,
+  int NunchuckFunctions::nunchuck_buf[6] = {};   // array to store nunchuck data,
 }
 
 // initialize the I2C system, join the I2C bus,
