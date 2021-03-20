@@ -17,6 +17,22 @@ This code is meant for an Arduino Due which is used to take input signals from t
 # remote arduino box
 Simple laser cut 'sandwich' plate box containing a severely stripped-down ps4 controller, the arduino due and a 8000mAh powerbank. Further electonics consist of two 12-LED neopixel style ring-lights for feedback, a protoshield containing series resistors and RC filters for generating output signals to the PS4 controller. A small thin patching pcb for PS4 has been added to connect the Arduino due to the remnants of the PS4 controller. In order to connect two nunchucks to one I2C port, a PCA9540B I2C multiplexer has been added to the nice SMD proto-area of the used Adafruit Arduino MEGA protoshield. 
 
+The parts used in the current version (as televised in 'We Gaan Het Maken')
+  * Arduino Due
+  * mega proto shield
+  * 17 x resistor 1k (series resistor between outputs arduino to button inputs ps4)
+  * 4 x resistor 100k (RC filter between analog outputs arduino to joystick inputs ps4)
+  * 4 x capacitor 10uF (RC filter between analog outputs arduino to joystick inputs ps4)
+  * PS4 remapper pcb (wired connection between arduino (shield) and ps4)
+  * powerbank (8000mAh)
+  * pushbutton (1 extra pushbutton to act as the PS4 button) on the box
+  * 2 x RJ45 socket (to connect the custom handhelds) 
+
+and for the handhelds:
+  * 2 x flat UTP cable, 1 meter, black. 1 side has the plug, the other needs to be stripped into separate strands)
+  * 3d printed parts: a handle, holder and top bit (and optional wedge)
+  * a joystick. 1 option is a standard PS4 joystick (currently used) or a nintendo switch joystick (which needs a separate foil cable socket and adapter pcb to make connection) 
+  * 2 x 12x14 mm pusbutton (large buttons have the easiest 'click')
 <img src="pictures/arduino box.jpg" alt="sandwich plate box with arduino, ps4 controller and powerbank" width="300"/> 
 
 # remote-modular ps4
