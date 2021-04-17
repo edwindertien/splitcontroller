@@ -1,7 +1,0 @@
-WARNING: library ArduinoSTL claims to run on avr, samd architecture(s) and may be incompatible with your current board which runs on sam architecture(s).
-In file included from /home/lonn/splitcontroller/bridge-firmwareOOP/bridge-firmwareOOP.ino:75:0:
-/home/lonn/Arduino/libraries/NunchuckFunctions/NunchuckFunctions.h:21:30: error: storage class specified for 'nunchuck_buf'
-   extern int   nunchuck_buf[6];
-                              ^
-
-Error during build: exit status 1
