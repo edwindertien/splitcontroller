@@ -86,53 +86,44 @@ enum Mode {GREEN, RED, BLUE};
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
 
-std::map<std::string,uint8_t> m_ps4pins =
-{
-  {"joyRXax2", 2},
-  {"joyRYax1", 3},
-  {"joyRZb11", 4},
-  {"joyLZb12", 7},
-  {"joyLYax4", 6},
-  {"joyLXax3", 5},
-  {"sqbutton", 26},
-  {"circbutton", 28},
-  {"psbutton", 30},
-  {"l2button", 32},
-  {"r2button", 34},
-  {"tributton", 36},
-  {"xbutton", 38},
-  {"lhat", 40},
-  {"rhat", 42},
-  {"uhat", 44},
-  {"dhat", 46},
-  {"r1button6", 48},
-  {"l1button5", 50},
-  {"optbutton",  52}
-};
+typedef std::map<std::pair<std::string, uint8_t>, std::string > Maptype;
 
-// nunchuck or analog joystick
-std::map<std::string,uint8_t> m_analogpins =
-{
-  {"accx1", A5},
-  {"accy1", A4},
-  {"accx2", A1},
-  {"accy2", A0},
-  {"c_button1", A6},
-  {"z_button1", A7},
-  {"c_button2", A2},
-  {"z_button2", A3},
-  {"shrebutton", A8}
-};
+Maptype mapping;
 
-// joy out X, Y, Z
-std::map<std::string,uint8_t> m_PWMpins =
-{
-  {"PWM1", 2},
-  {"PWM2", 3},
-  {"PWM3", 5},
-  {"PWM4", 6},
-  {"PWM5", 7}
-};
+m.insert(std::make_pair(std::make_pair("joyRXax2", 2),"foo"));
+m.insert(std::make_pair(std::make_pair("joyRYax1", 3),"foo"));
+m.insert(std::make_pair(std::make_pair("joyRZb11", 4),"foo"));
+m.insert(std::make_pair(std::make_pair("joyLZb12", 7),"foo"));
+m.insert(std::make_pair(std::make_pair("joyLYax4", 6),"foo"));
+m.insert(std::make_pair(std::make_pair("joyLXax3", 5),"foo"));
+m.insert(std::make_pair(std::make_pair("sqbutton", 26),"foo"));
+m.insert(std::make_pair(std::make_pair("circbutton", 28),"foo"));
+m.insert(std::make_pair(std::make_pair("psbutton", 30),"foo"));
+m.insert(std::make_pair(std::make_pair("l2button", 32),"foo"));
+m.insert(std::make_pair(std::make_pair("r2button", 34),"foo"));
+m.insert(std::make_pair(std::make_pair("tributton", 36),"foo"));
+m.insert(std::make_pair(std::make_pair("xbutton", 38),"foo"));
+m.insert(std::make_pair(std::make_pair("lhat", 40),"foo"));
+m.insert(std::make_pair(std::make_pair("rhat", 42),"foo"));
+m.insert(std::make_pair(std::make_pair("uhat", 44),"foo"));
+m.insert(std::make_pair(std::make_pair("dhat", 46),"foo"));
+m.insert(std::make_pair(std::make_pair("r1button6", 48),"foo"));
+m.insert(std::make_pair(std::make_pair("l1button5", 50),"foo"));
+m.insert(std::make_pair(std::make_pair("optbutton",  52),"foo"));
+m.insert(std::make_pair(std::make_pair("accx1", A5),"foo"));
+m.insert(std::make_pair(std::make_pair("accy1", A4),"foo"));
+m.insert(std::make_pair(std::make_pair("accx2", A1),"foo"));
+m.insert(std::make_pair(std::make_pair("accy2", A0),"foo"));
+m.insert(std::make_pair(std::make_pair("c_button1", A6),"foo"));
+m.insert(std::make_pair(std::make_pair("z_button1", A7),"foo"));
+m.insert(std::make_pair(std::make_pair("c_button2", A2),"foo"));
+m.insert(std::make_pair(std::make_pair("z_button2", A3),"foo"));
+m.insert(std::make_pair(std::make_pair("shrebutton", A8),"foo"));
+m.insert(std::make_pair(std::make_pair("PWM1", 2),"foo"));
+m.insert(std::make_pair(std::make_pair("PWM2", 3),"foo"));
+m.insert(std::make_pair(std::make_pair("PWM3", 5),"foo"));
+m.insert(std::make_pair(std::make_pair("PWM4", 6),"foo"));
+m.insert(std::make_pair(std::make_pair("PWM5", 7),"foo"));
 
 unsigned long loopTime;
 
