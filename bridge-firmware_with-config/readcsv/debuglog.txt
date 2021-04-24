@@ -1,6 +1,0 @@
-/home/lonn/splitcontroller/bridge-firmware_with-config/readcsv/readcsv.ino:10:19: fatal error: SdFat.h: No such file or directory
- #include <SdFat.h>
-                   ^
-compilation terminated.
-
-Error during build: exit status 1
