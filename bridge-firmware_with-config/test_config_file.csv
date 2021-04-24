@@ -1,0 +1,205 @@
+menu,side,button ,assigned to
+green,left ,joyRXax2,none
+green,left ,joyRYax1,none
+green,left ,joyRZb11,none
+green,left ,joyLZb12,none
+green,left ,joyLYax4,none
+green,left ,joyLXax3,none
+green,left ,sqbutton,none
+green,left ,circbutton,none
+green,left ,psbutton,none
+green,left ,l2button,none
+green,left ,r2button,none
+green,left ,tributton,none
+green,left ,xbutton,none
+green,left ,lhat,none
+green,left ,rhat,none
+green,left ,uhat,none
+green,left ,dhat,none
+green,left ,r1button6,none
+green,left ,l1button5,none
+green,left ,optbutton,none
+green,left ,accx1,none
+green,left ,accy1,none
+green,left ,accx2,none
+green,left ,accy2,none
+green,left ,c_button1,none
+green,left ,z_button1,none
+green,left ,c_button2,none
+green,left ,z_button2,none
+green,left ,shrebutton,none
+green,left ,PWM1,none
+green,left ,PWM2,none
+green,left ,PWM3,none
+green,left ,PWM4,none
+green,left ,PWM5,none
+green,right,joyRXax2,none
+green,right,joyRYax1,none
+green,right,joyRZb11,none
+green,right,joyLZb12,none
+green,right,joyLYax4,none
+green,right,joyLXax3,none
+green,right,sqbutton,none
+green,right,circbutton,none
+green,right,psbutton,none
+green,right,l2button,none
+green,right,r2button,none
+green,right,tributton,none
+green,right,xbutton,none
+green,right,lhat,none
+green,right,rhat,none
+green,right,uhat,none
+green,right,dhat,none
+green,right,r1button6,none
+green,right,l1button5,none
+green,right,optbutton,none
+green,right,accx1,none
+green,right,accy1,none
+green,right,accx2,none
+green,right,accy2,none
+green,right,c_button1,none
+green,right,z_button1,none
+green,right,c_button2,none
+green,right,z_button2,none
+green,right,shrebutton,none
+green,right,PWM1,none
+green,right,PWM2,none
+green,right,PWM3,none
+green,right,PWM4,none
+green,right,PWM5,none
+blue,left ,joyRXax2,none
+blue,left ,joyRYax1,none
+blue,left ,joyRZb11,none
+blue,left ,joyLZb12,none
+blue,left ,joyLYax4,none
+blue,left ,joyLXax3,none
+blue,left ,sqbutton,none
+blue,left ,circbutton,none
+blue,left ,psbutton,none
+blue,left ,l2button,none
+blue,left ,r2button,none
+blue,left ,tributton,none
+blue,left ,xbutton,none
+blue,left ,lhat,none
+blue,left ,rhat,none
+blue,left ,uhat,none
+blue,left ,dhat,none
+blue,left ,r1button6,none
+blue,left ,l1button5,none
+blue,left ,optbutton,none
+blue,left ,accx1,none
+blue,left ,accy1,none
+blue,left ,accx2,none
+blue,left ,accy2,none
+blue,left ,c_button1,none
+blue,left ,z_button1,none
+blue,left ,c_button2,none
+blue,left ,z_button2,none
+blue,left ,shrebutton,none
+blue,left ,PWM1,none
+blue,left ,PWM2,none
+blue,left ,PWM3,none
+blue,left ,PWM4,none
+blue,left ,PWM5,none
+blue,right,joyRXax2,none
+blue,right,joyRYax1,none
+blue,right,joyRZb11,none
+blue,right,joyLZb12,none
+blue,right,joyLYax4,none
+blue,right,joyLXax3,none
+blue,right,sqbutton,none
+blue,right,circbutton,none
+blue,right,psbutton,none
+blue,right,l2button,none
+blue,right,r2button,none
+blue,right,tributton,none
+blue,right,xbutton,none
+blue,right,lhat,none
+blue,right,rhat,none
+blue,right,uhat,none
+blue,right,dhat,none
+blue,right,r1button6,none
+blue,right,l1button5,none
+blue,right,optbutton,none
+blue,right,accx1,none
+blue,right,accy1,none
+blue,right,accx2,none
+blue,right,accy2,none
+blue,right,c_button1,none
+blue,right,z_button1,none
+blue,right,c_button2,none
+blue,right,z_button2,none
+blue,right,shrebutton,none
+blue,right,PWM1,none
+blue,right,PWM2,none
+blue,right,PWM3,none
+blue,right,PWM4,none
+blue,right,PWM5,none
+red,left ,joyRXax2,none
+red,left ,joyRYax1,none
+red,left ,joyRZb11,none
+red,left ,joyLZb12,none
+red,left ,joyLYax4,none
+red,left ,joyLXax3,none
+red,left ,sqbutton,none
+red,left ,circbutton,none
+red,left ,psbutton,none
+red,left ,l2button,none
+red,left ,r2button,none
+red,left ,tributton,none
+red,left ,xbutton,none
+red,left ,lhat,none
+red,left ,rhat,none
+red,left ,uhat,none
+red,left ,dhat,none
+red,left ,r1button6,none
+red,left ,l1button5,none
+red,left ,optbutton,none
+red,left ,accx1,none
+red,left ,accy1,none
+red,left ,accx2,none
+red,left ,accy2,none
+red,left ,c_button1,none
+red,left ,z_button1,none
+red,left ,c_button2,none
+red,left ,z_button2,none
+red,left ,shrebutton,none
+red,left ,PWM1,none
+red,left ,PWM2,none
+red,left ,PWM3,none
+red,left ,PWM4,none
+red,left ,PWM5,none
+red,right,joyRXax2,none
+red,right,joyRYax1,none
+red,right,joyRZb11,none
+red,right,joyLZb12,none
+red,right,joyLYax4,none
+red,right,joyLXax3,none
+red,right,sqbutton,none
+red,right,circbutton,none
+red,right,psbutton,none
+red,right,l2button,none
+red,right,r2button,none
+red,right,tributton,none
+red,right,xbutton,none
+red,right,lhat,none
+red,right,rhat,none
+red,right,uhat,none
+red,right,dhat,none
+red,right,r1button6,none
+red,right,l1button5,none
+red,right,optbutton,none
+red,right,accx1,none
+red,right,accy1,none
+red,right,accx2,none
+red,right,accy2,none
+red,right,c_button1,none
+red,right,z_button1,none
+red,right,c_button2,none
+red,right,z_button2,none
+red,right,shrebutton,none
+red,right,PWM1,none
+red,right,PWM2,none
+red,right,PWM3,none
+red,right,PWM4,none
+red,right,PWM5,none

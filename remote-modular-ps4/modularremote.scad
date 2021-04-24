@@ -1,4 +1,5 @@
-$fn = 100;
+// change to 100 for better rendering
+$fn = 20;
 
 
 
@@ -27,6 +28,7 @@ module ring(){
 module top() {
     difference(){
         union(){
+            color( "Lime", 1.0 )
             rotate_extrude() {
                 hull() {
                     translate([15, 17.5, 0]) circle(r = 1);
@@ -37,13 +39,22 @@ module top() {
                     translate([15, 0, 0]) circle(r = 1);
                 }     
             } 
-               translate([0,0,8])  hull(){
+               translate([0,0,8])  
+            color( "Red", 1.0 )hull(){
 rotate([0,0,-5])translate([0,-14,-2])sphere(d=12);
 rotate([0,0,40])translate([0,-14,-2])sphere(d=12);
       
 rotate([0,0,-5])translate([0,-14,-12])rotate([17,0,0])translate([0,0,15])cylinder(d1=22,d2=22,h=4);
 rotate([0,0,40])translate([0,-14,-12])rotate([17,0,0])translate([0,0,15])cylinder(d1=22,d2=22,h=4);      
       }
+      // here goes thing for third button
+      color( "PaleVioletRed", 1.0 )rotate([0,0,80])translate([0,0,-10])minkowski()
+{
+  rotate_extrude(angle = 60, convexity = 2)translate([16,20,0])square([1,10],center=true);
+  cylinder(r=2,h=1);
+}
+
+
         }
         translate([-20,-20,-5])cube([40,40,5]);
         cylinder(d=28,h=17.5);

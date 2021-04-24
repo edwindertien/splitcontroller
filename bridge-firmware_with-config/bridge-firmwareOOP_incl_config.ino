@@ -62,6 +62,16 @@
 #include <iostream>
 #include <map>
 
+// below is for reading CSV files from SD
+#include <limits.h>
+#include <SPI.h>
+#include <SdFat.h>
+
+SdFat SD;
+
+#define CS_PIN SS
+
+File file;
 
 // define 1 if nunchuck, 0 if PS4 mod
 #define NUNCHCK 1
@@ -592,6 +602,83 @@ class Modps4contr : protected Contr {
     c_button[1] = !digitalRead(m_analogpins["c_button2"]);
     z_button[1] = !digitalRead(m_analogpins["z_button2"]);
   }
+};
+
+class CSVreader {
+  public:
+    void openandread() {
+      // Initialize the SD.
+      if (!SD.begin(CS_PIN)) {
+        Serial.println("begin failed");
+        return;
+      }
+
+
+      // Create the file.
+      file = SD.open("READTEST.TXT");
+      if (!file) {
+        Serial.println("open failed");
+        return;
+      }
+
+      // Rewind the file for read.
+      file.seek(0);
+
+      size_t n;      // Length of returned field with delimiter.
+      char str[20];  // Must hold longest field with delimiter and zero byte.
+      // Read the file and print fields.
+      while (file.available()) {
+        n = readField(&file, str, sizeof(str), ",\n");
+
+        // done if Error or at EOF.
+        if (n == 0) break;
+
+        // Print the type of delimiter.
+        if (str[n-1] == ',' || str[n-1] == '\n') {
+          Serial.print(str[n-1] == ',' ? F("comma: ") : F("endl:  "));
+
+          // Remove the delimiter.
+          str[n-1] = 0;
+        } else {
+          // At eof, too long, or read error.  Too long is error.
+          Serial.print(file.available() ? F("error: ") : F("eof:   "));
+        }
+        // Print the field.
+        Serial.println(str);
+      }
+      file.close();
+    }
+
+    size_t readField(File* file, char* str, size_t size, char* delim) {
+      char ch;
+      size_t n = 0;
+      while ((n + 1) < size && file->read(&ch, 1) == 1) {
+        // Delete CR.
+        if (ch == '\r') {
+          continue;
+        }
+        str[n++] = ch;
+        if (strchr(delim, ch)) {
+            break;
+        }
+      }
+      str[n] = '\0';
+      return n;
+    }
+
+
+  void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
+      std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
+      while (custMapIt != customMap.end())
+      {
+          std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+          itPsMap = customMap.find('b');
+          if (itPsMap != customMap.end())
+            // here was erase
+          custMapIt++;
+      }
+
+    }
 };
 
 Contr *controller = NULL;
