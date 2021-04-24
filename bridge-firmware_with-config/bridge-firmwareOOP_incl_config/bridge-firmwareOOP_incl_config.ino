@@ -99,42 +99,42 @@ const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
 
 std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pins =
-    {
-        {{"joyRXax2", 2},"foo"},
-        {{"joyRYax1", 3},"foo"},
-        {{"joyRZb11", 4},"foo"},
-        {{"joyLZb12", 7},"foo"},
-        {{"joyLYax4", 6},"foo"},
-        {{"joyLXax3", 5},"foo"},
-        {{"sqbutton", 26},"foo"},
-        {{"circbutton", 28},"foo"},
-        {{"psbutton", 30},"foo"},
-        {{"l2button", 32},"foo"},
-        {{"r2button", 34},"foo"},
-        {{"tributton", 36},"foo"},
-        {{"xbutton", 38},"foo"},
-        {{"lhat", 40},"foo"},
-        {{"rhat", 42},"foo"},
-        {{"uhat", 44},"foo"},
-        {{"dhat", 46},"foo"},
-        {{"r1button6", 48},"foo"},
-        {{"l1button5", 50},"foo"},
-        {{"optbutton",  52},"foo"},
-        {{"accx1", A5},"foo"},
-        {{"accy1", A4},"foo"},
-        {{"accx2", A1},"foo"},
-        {{"accy2", A0},"foo"},
-        {{"c_button1", A6},"foo"},
-        {{"z_button1", A7},"foo"},
-        {{"c_button2", A2},"foo"},
-        {{"z_button2", A3},"foo"},
-        {{"shrebutton", A8},"foo"},
-        {{"PWM1", 2},"foo"},
-        {{"PWM2", 3},"foo"},
-        {{"PWM3", 5},"foo"},
-        {{"PWM4", 6},"foo"},
-        {{"PWM5", 7},"foo"}
-    };
+{
+    {{"joyRXax2", 2},"foo"},
+    {{"joyRYax1", 3},"foo"},
+    {{"joyRZb11", 4},"foo"},
+    {{"joyLZb12", 7},"foo"},
+    {{"joyLYax4", 6},"foo"},
+    {{"joyLXax3", 5},"foo"},
+    {{"sqbutton", 26},"foo"},
+    {{"circbutton", 28},"foo"},
+    {{"psbutton", 30},"foo"},
+    {{"l2button", 32},"foo"},
+    {{"r2button", 34},"foo"},
+    {{"tributton", 36},"foo"},
+    {{"xbutton", 38},"foo"},
+    {{"lhat", 40},"foo"},
+    {{"rhat", 42},"foo"},
+    {{"uhat", 44},"foo"},
+    {{"dhat", 46},"foo"},
+    {{"r1button6", 48},"foo"},
+    {{"l1button5", 50},"foo"},
+    {{"optbutton",  52},"foo"},
+    {{"accx1", A5},"foo"},
+    {{"accy1", A4},"foo"},
+    {{"accx2", A1},"foo"},
+    {{"accy2", A0},"foo"},
+    {{"c_button1", A6},"foo"},
+    {{"z_button1", A7},"foo"},
+    {{"c_button2", A2},"foo"},
+    {{"z_button2", A3},"foo"},
+    {{"shrebutton", A8},"foo"},
+    {{"PWM1", 2},"foo"},
+    {{"PWM2", 3},"foo"},
+    {{"PWM3", 5},"foo"},
+    {{"PWM4", 6},"foo"},
+    {{"PWM5", 7},"foo"}
+};
 
 unsigned long loopTime;
 
@@ -146,29 +146,82 @@ unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
 boolean LeftReleased, RightReleased;
 
-class CustomMapping {
-  void readCSVmap(std::string filename) {
-    // maybe add check for csv
-    std::ifstream       file(filename);
+class CSVreader {
+  public:
+    void openandread() {
+      // Initialize the SD.
+      if (!SD.begin(CS_PIN)) {
+        Serial.println("begin failed");
+        return;
+      }
 
-    for(auto& row: CSVreader::CSVRange(file))
-    {
-        std::cout << "4th Element(" << row[3] << ")\n";
+
+      // Create the file.
+      file = SD.open("READTEST.TXT");
+      if (!file) {
+        Serial.println("open failed");
+        return;
+      }
+
+      // Rewind the file for read.
+      file.seek(0);
+
+      size_t n;      // Length of returned field with delimiter.
+      char str[20];  // Must hold longest field with delimiter and zero byte.
+      // Read the file and print fields.
+      while (file.available()) {
+        n = readField(&file, str, sizeof(str), ",\n");
+
+        // done if Error or at EOF.
+        if (n == 0) break;
+
+        // Print the type of delimiter.
+        if (str[n-1] == ',' || str[n-1] == '\n') {
+          Serial.print(str[n-1] == ',' ? F("comma: ") : F("endl:  "));
+
+          // Remove the delimiter.
+          str[n-1] = 0;
+        } else {
+          // At eof, too long, or read error.  Too long is error.
+          Serial.print(file.available() ? F("error: ") : F("eof:   "));
+        }
+        // Print the field.
+        Serial.println(str);
+        //ADD HERE: PUT THING IN MAP
+      }
+      file.close();
     }
-  }
+
+    size_t readField(File* file, char* str, size_t size, char* delim) {
+      char ch;
+      size_t n = 0;
+      while ((n + 1) < size && file->read(&ch, 1) == 1) {
+        // Delete CR.
+        if (ch == '\r') {
+          continue;
+        }
+        str[n++] = ch;
+        if (strchr(delim, ch)) {
+            break;
+        }
+      }
+      str[n] = '\0';
+      return n;
+    }
+
 
   void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
-    std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
-    while (custMapIt != customMap.end())
-    {
-        //std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
-        itPsMap = customMap.find('b');
-        if (itPsMap != customMap.end()) {
-          // do something
-        }
-        custMapIt++;
+      std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
+      while (custMapIt != customMap.end())
+      {
+          std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+          itPsMap = customMap.find('b');
+          if (itPsMap != customMap.end())
+            // here was erase
+          custMapIt++;
+      }
+
     }
-  }
 };
 
 class Contr {
@@ -183,19 +236,7 @@ class Contr {
     unsigned char accy[2];
     unsigned char c_button[2];
     unsigned char z_button[2];
-/*
-    unsigned char& refAccxLeft = accx[0];
-    unsigned char& refAccxRight = accx[1];
 
-    unsigned char& refAccyLeft = accy[0];
-    unsigned char& refAccyRight = accy[1];
-
-    unsigned char& refCbuttonLeft = c_button[0];
-    unsigned char& refCbuttonRight = c_button[1];
-
-    unsigned char& refZbuttonLeft = z_button[0];
-    unsigned char& refZbuttonRight = z_button[1];
-*/
     // init modes
     Mode LeftMode = RED;
     Mode RightMode = RED;
@@ -605,82 +646,6 @@ class Modps4contr : protected Contr {
   }
 };
 
-class CSVreader {
-  public:
-    void openandread() {
-      // Initialize the SD.
-      if (!SD.begin(CS_PIN)) {
-        Serial.println("begin failed");
-        return;
-      }
-
-
-      // Create the file.
-      file = SD.open("READTEST.TXT");
-      if (!file) {
-        Serial.println("open failed");
-        return;
-      }
-
-      // Rewind the file for read.
-      file.seek(0);
-
-      size_t n;      // Length of returned field with delimiter.
-      char str[20];  // Must hold longest field with delimiter and zero byte.
-      // Read the file and print fields.
-      while (file.available()) {
-        n = readField(&file, str, sizeof(str), ",\n");
-
-        // done if Error or at EOF.
-        if (n == 0) break;
-
-        // Print the type of delimiter.
-        if (str[n-1] == ',' || str[n-1] == '\n') {
-          Serial.print(str[n-1] == ',' ? F("comma: ") : F("endl:  "));
-
-          // Remove the delimiter.
-          str[n-1] = 0;
-        } else {
-          // At eof, too long, or read error.  Too long is error.
-          Serial.print(file.available() ? F("error: ") : F("eof:   "));
-        }
-        // Print the field.
-        Serial.println(str);
-      }
-      file.close();
-    }
-
-    size_t readField(File* file, char* str, size_t size, char* delim) {
-      char ch;
-      size_t n = 0;
-      while ((n + 1) < size && file->read(&ch, 1) == 1) {
-        // Delete CR.
-        if (ch == '\r') {
-          continue;
-        }
-        str[n++] = ch;
-        if (strchr(delim, ch)) {
-            break;
-        }
-      }
-      str[n] = '\0';
-      return n;
-    }
-
-
-  void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
-      std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
-      while (custMapIt != customMap.end())
-      {
-          std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
-          itPsMap = customMap.find('b');
-          if (itPsMap != customMap.end())
-            // here was erase
-          custMapIt++;
-      }
-
-    }
-};
 
 Contr *controller = NULL;
 
