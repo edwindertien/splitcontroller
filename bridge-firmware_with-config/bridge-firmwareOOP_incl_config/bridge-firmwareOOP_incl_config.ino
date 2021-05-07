@@ -247,7 +247,7 @@ class Contr {
     }
 
     void init() {
-      pinMode(m_ps4pins["greenLED"], OUTPUT); // greenLED 13
+      pinMode(m_ps4pins[0]["greenLED"], OUTPUT); // greenLED 13
       pinMode(9, OUTPUT);
 
       std::map<std::string,uint8_t>::iterator it;
@@ -259,20 +259,20 @@ class Contr {
 
       }
 
-      digitalWrite(m_ps4pins["joyRZb11"], LOW); // hoog actief   4
-      digitalWrite(m_ps4pins["joyLZb12"], LOW); // hoog actief 7
-      digitalWrite(m_ps4pins["r1button6"], LOW);// hoog actief  48
-      digitalWrite(m_ps4pins["l1button5"], LOW);// hoog actief  50
+      digitalWrite(m_ps4pins[0]["joyRZb11"], LOW); // hoog actief   4
+      digitalWrite(m_ps4pins[0]["joyLZb12"], LOW); // hoog actief 7
+      digitalWrite(m_ps4pins[0]["r1button6"], LOW);// hoog actief  48
+      digitalWrite(m_ps4pins[0]["l1button5"], LOW);// hoog actief  50
 
-      analogWrite(m_PWMpins["PWM1"], 127);  // start with centervoltage
-      analogWrite(m_PWMpins["PWM2"], 127);
-      analogWrite(m_PWMpins["PWM3"], 127);
-      analogWrite(m_PWMpins["PWM4"], 127);
+      analogWrite(m_ps4pins[0]["PWM1"], 127);  // start with centervoltage
+      analogWrite(m_ps4pins[0]["PWM2"], 127);
+      analogWrite(m_ps4pins[0]["PWM3"], 127);
+      analogWrite(m_ps4pins[0]["PWM4"], 127);
 
-      pinMode(m_analogpins["c_button2"], INPUT_PULLUP);  // for the switches.
-      pinMode(m_analogpins["z_button2"], INPUT_PULLUP);
-      pinMode(m_analogpins["c_button1"], INPUT_PULLUP);
-      pinMode(m_analogpins["z_button1"], INPUT_PULLUP);
+      pinMode(m_ps4pins[0]["c_button2"], INPUT_PULLUP);  // for the switches.
+      pinMode(m_ps4pins[0]["z_button2"], INPUT_PULLUP);
+      pinMode(m_ps4pins[0]["c_button1"], INPUT_PULLUP);
+      pinMode(m_ps4pins[0]["z_button1"], INPUT_PULLUP);
 
       #ifdef DEBUG
         Serial.println("started up");
