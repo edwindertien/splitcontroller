@@ -70,8 +70,10 @@ File root;
 volatile int position;
 */
 // include the library code for the display:
+#include <SPI.h>
+#include <SD.h>
 #include <LiquidCrystal.h>
-// initialize the library by associating any needed LCD interface pin
+// initialize the library by associating any needed LCD uint8_terface pin
 // with the arduino pin number it is connected to
 
 
@@ -81,23 +83,19 @@ volatile int position;
 
 class SDreader {
 private:
-  const int BUTTON = 41;
-  const int BTN_EN1 = 31;
-  const int BTN_EN2 = 33;
-  const int BTN_ENC = 35;
-  const int BUZZER = 37;
-  const int SDCARDDETECT = 49;
-  const int SLAVESELECT = 53;
-  volatile int position;
-  const int rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
+  const uint8_t BUTTON = 41;
+  const uint8_t BTN_EN1 = 31;
+  const uint8_t BTN_EN2 = 33;
+  const uint8_t BTN_ENC = 35;
+  const uint8_t BUZZER = 37;
+  const uint8_t SDCARDDETECT = 49;
+  const uint8_t SLAVESELECT = 53;
+  volatile uint8_t position;
+  const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
   LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+  File root;
 public:
   SDreader() {
-    init();
-  }
-
-  void init() {
-    // setup the pins, no pullup on the controller board.
     pinMode(BUZZER, OUTPUT);
     pinMode(BUTTON, INPUT_PULLUP);
     pinMode(BTN_ENC, INPUT_PULLUP);
@@ -113,7 +111,7 @@ public:
     // Open serial communications and wait for port to open:
     Serial.begin(115200);
     while (!Serial) {
-      ; // wait for serial port to connect. Needed for native USB port only
+      delay(10); // wait for serial port to connect. Needed for native USB port only
     }
     Serial.print("Initializing SD card...");
     if (!SD.begin(SLAVESELECT)) {
@@ -129,7 +127,7 @@ public:
   /*
   void loop() {
     static unsigned long looptimer; // for timing in this loop.
-    encoder();  // run the service routine, could also be using timer interrupt
+    encoder();  // run the service routine, could also be using timer uint8_terrupt
     if (millis() > looptimer + 99) {
       looptimer = millis();
       lcd.setCursor(0, 1); // line 1 is the second row, since counting begins with 0
@@ -147,9 +145,9 @@ public:
   */
 
   void encoder(){
-    int A = digitalRead(BTN_EN1);
-    int B = digitalRead(BTN_EN2);
-    static int dA,dB;
+    uint8_t A = digitalRead(BTN_EN1);
+    uint8_t B = digitalRead(BTN_EN2);
+    static uint8_t dA,dB;
     // full quadrature, so 4 values per 'click'
     if ((A == 1 && dA == 0 && B == 0) || (A == 0 && dA == 1 && B == 1) || (B == 1 && dB == 0 && A == 1) || (B == 0 && dB == 1 && A == 0)) position++;
     if ((B == 1 && dB == 0 && A == 0) || (B == 0 && dB == 1 && A == 1) || (A == 1 && dA == 0 && B == 1) || (A == 0 && dA == 1 && B == 0)) position--;
