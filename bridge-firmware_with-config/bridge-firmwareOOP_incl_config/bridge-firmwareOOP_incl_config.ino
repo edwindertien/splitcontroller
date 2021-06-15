@@ -58,6 +58,8 @@
 //#define NUNCHUCK (1)
 //#define DEBUG (1)
 
+#include SDDisplModule.ino
+
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
 
@@ -147,6 +149,16 @@ boolean L1state, R1state, R2state, L2state, Rreleased;
 boolean LeftReleased, RightReleased;
 
 class CSVreader {
+  protected:
+
+    CSVreader() {
+      init();
+    }
+
+    void init() {
+
+    }
+
   public:
     void openandread() {
       // Initialize the SD.
