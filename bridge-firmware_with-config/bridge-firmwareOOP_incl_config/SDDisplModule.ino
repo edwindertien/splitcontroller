@@ -48,38 +48,9 @@
 */
 
 #include <ArduinoSTL.h>
-
-/*
-
-#define BUTTON 41 //[RAMPS14-SMART-ADAPTER]
-//encoder pins
-#define BTN_EN1 31 //[RAMPS14-SMART-ADAPTER]
-#define BTN_EN2 33 //[RAMPS14-SMART-ADAPTER]
-#define BTN_ENC 35 //[RAMPS14-SMART-ADAPTER]
-//buzzer
-#define BUZZER 37 //[RAMPS14-SMART-ADAPTER]
-//SD card detect pin (not used yet)
-#define SDCARDDETECT 49 //[RAMPS14-SMART-ADAPTER]
-//and the slave select (part of SPI to SD card)
-#define SLAVESELECT 53  //[RAMPS14-SMART-ADAPTER]
-// for the SD card:
-#include <SPI.h>
-#include <SD.h>
-File root;
-// for the encoder (a global.. ugh..)
-volatile int position;
-*/
-// include the library code for the display:
 #include <SPI.h>
 #include <SD.h>
 #include <LiquidCrystal.h>
-// initialize the library by associating any needed LCD uint8_terface pin
-// with the arduino pin number it is connected to
-
-
-//const int rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
-//LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
 
 class SDreader {
 private:
@@ -94,6 +65,7 @@ private:
   const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
   LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
   File root;
+
 public:
   SDreader() {
     pinMode(BUZZER, OUTPUT);
@@ -124,8 +96,9 @@ public:
     Serial.println("done!");
   }
 
-  /*
-  void loop() {
+
+  void readData() {
+    // while true? except stop
     static unsigned long looptimer; // for timing in this loop.
     encoder();  // run the service routine, could also be using timer uint8_terrupt
     if (millis() > looptimer + 99) {
@@ -142,7 +115,7 @@ public:
       // a better routine checking a card has been inserted and (re)connecting.
     }
   }
-  */
+
 
   void encoder(){
     uint8_t A = digitalRead(BTN_EN1);
