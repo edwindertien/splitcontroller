@@ -67,14 +67,11 @@
 // below is for reading CSV files from SD
 #include <limits.h>
 #include <SPI.h>
-#include <SdFat.h>
 
 // below are for ReprapDiscount Smart Controller
 #include <SPI.h>
 #include <SD.h>
 #include <LiquidCrystal.h>
-
-SdFat SD;
 
 #define CS_PIN SS
 
@@ -102,6 +99,8 @@ enum Mode {GREEN, RED, BLUE};
 
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
+
+const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
 
 std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pins =
 {
@@ -151,91 +150,6 @@ unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
 boolean LeftReleased, RightReleased;
 
-class CSVreader {
-  protected:
-
-    CSVreader() {
-      SDreader sdreader;
-      // sdreader -> callfunc();
-    }
-
-  public:
-    void openandread() {
-      // Initialize the SD.
-      if (!SD.begin(CS_PIN)) {
-        Serial.println("begin failed");
-        return;
-      }
-
-
-      // Create the file.
-      file = SD.open("READTEST.TXT");
-      if (!file) {
-        Serial.println("open failed");
-        return;
-      }
-
-      // Rewind the file for read.
-      file.seek(0);
-
-      size_t n;      // Length of returned field with delimiter.
-      char str[20];  // Must hold longest field with delimiter and zero byte.
-      // Read the file and print fields.
-      while (file.available()) {
-        n = readField(&file, str, sizeof(str), ",\n");
-
-        // done if Error or at EOF.
-        if (n == 0) break;
-
-        // Print the type of delimiter.
-        if (str[n-1] == ',' || str[n-1] == '\n') {
-          Serial.print(str[n-1] == ',' ? F("comma: ") : F("endl:  "));
-
-          // Remove the delimiter.
-          str[n-1] = 0;
-        } else {
-          // At eof, too long, or read error.  Too long is error.
-          Serial.print(file.available() ? F("error: ") : F("eof:   "));
-        }
-        // Print the field.
-        Serial.println(str);
-        //ADD HERE: PUT THING IN MAP AND CHECK FIELD
-      }
-      file.close();
-    }
-
-    size_t readField(File* file, char* str, size_t size, char* delim) {
-      char ch;
-      size_t n = 0;
-      while ((n + 1) < size && file->read(&ch, 1) == 1) {
-        // Delete CR.
-        if (ch == '\r') {
-          continue;
-        }
-        str[n++] = ch;
-        if (strchr(delim, ch)) {
-            break;
-        }
-      }
-      str[n] = '\0';
-      return n;
-    }
-
-
-  void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
-      std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
-      while (custMapIt != customMap.end())
-      {
-          std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
-          itPsMap = customMap.find('b');
-          if (itPsMap != customMap.end())
-            // here was erase
-          custMapIt++;
-      }
-
-    }
-};
-
 class SDreader {
   private:
     const uint8_t BUTTON = 41;
@@ -246,7 +160,6 @@ class SDreader {
     const uint8_t SDCARDDETECT = 49;
     const uint8_t SLAVESELECT = 53;
     volatile uint8_t position;
-    const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
     LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
     File root;
 
@@ -335,6 +248,34 @@ class SDreader {
       }
     }
 };
+
+
+class CSVreader {
+  protected:
+
+    CSVreader() {
+      SDreader sdreader;
+      // sdreader -> callfunc();
+    }
+
+  public:
+    
+ 
+
+  void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
+      std::map<std::string,std::string>::iterator custMapIt = customMap.begin();
+      while (custMapIt != customMap.end())
+      {
+          std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+          itPsMap = customMap.find('b');
+          if (itPsMap != customMap.end())
+            // here was erase
+          custMapIt++;
+      }
+
+    }
+};
+
 
 
 class Contr {

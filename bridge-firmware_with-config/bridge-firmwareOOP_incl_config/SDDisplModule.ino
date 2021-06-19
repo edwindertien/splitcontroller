@@ -45,14 +45,14 @@
   |____________________|_________________|
 
   (cc) e13, May 2021
-*/
+
 
 #include <ArduinoSTL.h>
 #include <SPI.h>
 #include <SD.h>
 #include <LiquidCrystal.h>
 
-class SDreader {
+class SDreader1 {
 private:
   const uint8_t BUTTON = 41;
   const uint8_t BTN_EN1 = 31;
@@ -151,3 +151,4 @@ public:
     }
   }
 }
+*/
