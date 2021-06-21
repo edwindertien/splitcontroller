@@ -154,10 +154,6 @@ unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
 boolean LeftReleased, RightReleased;
 
-// LCD module
-//const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
-//LiquidCrystal lcd(16, 17, 23, 25, 27, 29);
-
 class SDreader {
   private:
     const uint8_t BUTTON = 41;
