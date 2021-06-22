@@ -106,7 +106,7 @@ const uint8_t redLED = 12;
 
 
 
-std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pins =
+std::map<std::pair<std::string, uint8_t>, std::string> m_ps4digipins =
 {
   {{"joyRXax2", 2}, "foo"},
   {{"joyRYax1", 3}, "foo"},
@@ -128,6 +128,10 @@ std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pins =
   {{"r1button6", 48}, "foo"},
   {{"l1button5", 50}, "foo"},
   {{"optbutton",  52}, "foo"},
+  {{"shrebutton", A8}, "foo"}
+};
+std::map<std::pair<std::string, uint8_t>, std::string> m_ps4analogpins =
+{
   {{"accx1", A5}, "foo"},
   {{"accy1", A4}, "foo"},
   {{"accx2", A1}, "foo"},
@@ -135,8 +139,11 @@ std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pins =
   {{"c_button1", A6}, "foo"},
   {{"z_button1", A7}, "foo"},
   {{"c_button2", A2}, "foo"},
-  {{"z_button2", A3}, "foo"},
-  {{"shrebutton", A8}, "foo"},
+  {{"z_button2", A3}, "foo"}
+};
+
+std::map<std::pair<std::string, uint8_t>, std::string> m_ps4pwmpins =
+{
   {{"PWM1", 2}, "foo"},
   {{"PWM2", 3}, "foo"},
   {{"PWM3", 5}, "foo"},
@@ -167,7 +174,7 @@ class SDreader {
     File root;
     const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
     LiquidCrystal lcd;
-    
+
   public:
     SDreader() : lcd(rs, en, d4, d5, d6, d7) {
       pinMode(BUZZER, OUTPUT);
@@ -251,21 +258,36 @@ class SDreader {
 
 class CSVreader {
   protected:
+    std::map<std::pair<std::string, uint8_t>, std::string>::iterator itPsMap ;
+
+
+  public:
 
     CSVreader() {
       SDreader sdreader;
       // sdreader -> callfunc();
     }
+    /*check compat map type
+        void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
+          std::map<std::string, std::string>::iterator custMapIt = customMap.begin();
+          while (custMapIt != customMap.end())
+          {
+            std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+            itPsMap = customMap.find('b');
+            if (itPsMap != customMap.end())
+              // here was erase
+              custMapIt++;
+          }
 
-  public:
-
-
-
-    void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
-      std::map<std::string, std::string>::iterator custMapIt = customMap.begin();
+        }
+    */
+    void checkMap(std::map<std::pair<std::string, uint8_t>, std::string>  &psMap, std::map<std::pair<std::string, uint8_t>, std::string>  &customMap) {
+      std::map<std::pair<std::string, uint8_t>, std::string>::iterator custMapIt = customMap.begin();
       while (custMapIt != customMap.end())
       {
-        std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+       // std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+       Serial.print("Checkmap:");
+       Serial.println(custMapIt->first);
         itPsMap = customMap.find('b');
         if (itPsMap != customMap.end())
           // here was erase
@@ -712,7 +734,7 @@ void setup() {
 #endif
 #ifdef SDCLDMODULE
 
-  SDreader sdreader;
+  // read csv
 #endif
   delay(20);        // wait for the nunchuck to be powered up
   // empty object for null-checking
