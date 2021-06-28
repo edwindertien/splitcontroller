@@ -57,12 +57,15 @@
 
 //#define NUNCHUCK (1)
 //#define DEBUG (1)
+#include <Arduino.h>
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoSTL.h>
 
 #include <iostream>
 #include <map>
+#include<iterator>
+#include <sstream>
 
 // below is for reading CSV files from SD
 #include <limits.h>
@@ -100,11 +103,16 @@ const Device dv = PS4CONTR;
 #endif
 
 enum Mode {GREEN, RED, BLUE};
+enum PinType {DIGITAL, ANALOG, PWM};
 
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
 
-
+struct pinallocation {
+  std::string origps4func;
+  uint8_t pinnum;
+  PinType pinType;  
+}
 
 std::map<std::pair<std::string, uint8_t>, std::string> m_ps4digipins =
 {
@@ -174,6 +182,8 @@ class SDreader {
     File root;
     const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
     LiquidCrystal lcd;
+
+     static stringstream ss;
 
   public:
     SDreader() : lcd(rs, en, d4, d5, d6, d7) {
@@ -286,8 +296,12 @@ class CSVreader {
       while (custMapIt != customMap.end())
       {
        // std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
+      
+       ss<<custMapIt->first;
+      //ss<<”Hello,World”;
+        cout<<ss.str();
        Serial.print("Checkmap:");
-       Serial.println(custMapIt->first);
+       Serial.println(custMapIt->first.first);
         itPsMap = customMap.find('b');
         if (itPsMap != customMap.end())
           // here was erase
@@ -329,27 +343,27 @@ class Contr {
 
 
       // TODO: check if this is right for all items in list
-      for (it = m_ps4pins.begin(); it != m_ps4pins.end(); it++)
+      for (it = m_ps4digipins.begin(); it != m_ps4digipins.end(); it++)
       {
         pinMode(it->second, OUTPUT);
         digitalWrite(it->second, HIGH);
 
       }
 
-      digitalWrite(m_ps4pins[0]["joyRZb11"], LOW); // hoog actief   4
-      digitalWrite(m_ps4pins[0]["joyLZb12"], LOW); // hoog actief 7
-      digitalWrite(m_ps4pins[0]["r1button6"], LOW);// hoog actief  48
-      digitalWrite(m_ps4pins[0]["l1button5"], LOW);// hoog actief  50
+      digitalWrite(m_ps4digipins[0]["joyRZb11"], LOW); // hoog actief   4
+      digitalWrite(m_ps4digipins[0]["joyLZb12"], LOW); // hoog actief 7
+      digitalWrite(m_ps4digipins[0]["r1button6"], LOW);// hoog actief  48
+      digitalWrite(m_ps4digipins[0]["l1button5"], LOW);// hoog actief  50
 
-      analogWrite(m_ps4pins[0]["PWM1"], 127);  // start with centervoltage
-      analogWrite(m_ps4pins[0]["PWM2"], 127);
-      analogWrite(m_ps4pins[0]["PWM3"], 127);
-      analogWrite(m_ps4pins[0]["PWM4"], 127);
+      analogWrite(m_ps4pwmpins[0]["PWM1"], 127);  // start with centervoltage
+      analogWrite(m_ps4pwmpins[0]["PWM2"], 127);
+      analogWrite(m_ps4pwmpins[0]["PWM3"], 127);
+      analogWrite(m_ps4pwmpins[0]["PWM4"], 127);
 
-      pinMode(m_ps4pins[0]["c_button2"], INPUT_PULLUP);  // for the switches.
-      pinMode(m_ps4pins[0]["z_button2"], INPUT_PULLUP);
-      pinMode(m_ps4pins[0]["c_button1"], INPUT_PULLUP);
-      pinMode(m_ps4pins[0]["z_button1"], INPUT_PULLUP);
+      pinMode(m_ps4analogpins[0]["c_button2"], INPUT_PULLUP);  // for the switches.
+      pinMode(m_ps4analogpins[0]["z_button2"], INPUT_PULLUP);
+      pinMode(m_ps4analogpins[0]["c_button1"], INPUT_PULLUP);
+      pinMode(m_ps4analogpins[0]["z_button1"], INPUT_PULLUP);
 
 #ifdef DEBUG
       Serial.println("started up");
@@ -397,16 +411,16 @@ class Contr {
       switch (LeftMode) {
         case GREEN:
           directionA = -1;
-          analogWrite(m_ps4pins[0]["joyRYax1"], accx[0]); // axis 1
-          analogWrite(m_ps4pins[0]["joyRXax2"], 255 - accy[0]); // axis 2
+          analogWrite(m_ps4digipins[0]["joyRYax1"], accx[0]); // axis 1
+          analogWrite(m_ps4digipins[0]["joyRXax2"], 255 - accy[0]); // axis 2
           // visualisation
 
           if (exceeds_neutral_range(accx[0]) || exceeds_neutral_range(accy[0])) {
             directionA = ((int)(6.5 * (3.1415 + atan2(accx[0] - CENTER, accy[0] - CENTER)) / 3.1415));
           }
 
-          if (z_button[0]) digitalWrite(m_ps4pins[0]["xbutton"], LOW);
-          else digitalWrite(m_ps4pins[0]["xbutton"], HIGH); // (X)
+          if (z_button[0]) digitalWrite(m_ps4digipins[0]["xbutton"], LOW);
+          else digitalWrite(m_ps4digipins[0]["xbutton"], HIGH); // (X)
 
           for (int i = 0; i < 12; i++) {
             leftRing.setPixelColor(i, leftRing.Color(0, MIN, 0));
@@ -416,19 +430,19 @@ class Contr {
           break;
         case RED:
           (is_above_margin(accx[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["optbutton"], writeout);
+          digitalWrite(m_ps4digipins[0]["optbutton"], writeout);
           Abuffer[9] = writebuffer;
 
           (is_below_margin(accx[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
-          digitalWrite(m_analogpins["shrebutton"], writeout);
+          digitalWrite(m_ps4digipins["shrebutton"], writeout);
           Abuffer[3] = writebuffer;
 
           (is_above_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["psbutton"], writeout);  // PS
+          digitalWrite(m_ps4digipins[0]["psbutton"], writeout);  // PS
           Abuffer[6] = writebuffer;
 
           (is_below_margin(accy[0])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["joyLXax3"] , writeout);  // Z-as  ?? pin 5 = joyLXax3
+          digitalWrite(m_ps4digipins[0]["joyLXax3"] , writeout);  // Z-as  ?? pin 5 = joyLXax3
           Abuffer[0] = writebuffer;
 
           //visualisation
@@ -439,21 +453,21 @@ class Contr {
           break;
         case BLUE:
           (is_above_margin(accx[0])) ? (writeout  = HIGH, writeout1 = LOW, writebuffer = MAX) : (writeout  = LOW, writeout1 = HIGH, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["l1button5"], writeout);
+          digitalWrite(m_ps4digipins[0]["l1button5"], writeout);
           // what does 26 refer to?
           digitalWrite(26, writeout1);
           Abuffer[9] = writebuffer;
 
           (is_below_margin(accx[0])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["l1button5"], writeout);
+          digitalWrite(m_ps4digipins[0]["l1button5"], writeout);
           Abuffer[3] = writebuffer;
 
           (is_above_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = HIGH, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["sqbutton"], writeout);
+          digitalWrite(m_ps4digipins[0]["sqbutton"], writeout);
           Abuffer[6] = writebuffer;
 
           (is_below_margin(accy[0])) ? (writeout  = LOW, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
-          digitalWrite(m_ps4pins[0]["circbutton"], writeout);
+          digitalWrite(m_ps4digipins[0]["circbutton"], writeout);
           Abuffer[0] = writebuffer;
 
           //visualisation
@@ -472,16 +486,16 @@ class Contr {
           {
             tempmargin = 80;
             (is_above_margin(accx[1], tempmargin) || is_below_margin(accx[1], tempmargin)) ? (writeout  = accx[1]) : (writeout  = 127);
-            analogWrite(m_ps4pins[0]["PWM4"], writeout);
+            analogWrite(m_ps4pwmpins[0]["PWM4"], writeout);
 
             (is_above_margin(accy[1], tempmargin) || is_below_margin(accy[1], tempmargin)) ? (writeout  = accy[1]) : (writeout  = 127);
-            analogWrite(m_ps4pins[0]["PWM4"], writeout);
+            analogWrite(m_ps4pwmpins[0]["PWM4"], writeout);
 
             if (exceeds_neutral_range(accx[1]) || exceeds_neutral_range(accy[1])) {
               directionB = ((int)(6.3 * (3.1415 + atan2(accx[1] - CENTER, accy[1] - CENTER)) / 3.1415));
             }
             (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
-            digitalWrite(m_ps4pins[0]["sqbutton"], writeout);
+            digitalWrite(m_ps4digipins[0]["sqbutton"], writeout);
 
             for (int i = 0; i < 12; i++) {
               rightRing.setPixelColor(i, rightRing.Color(0, MIN, 0));
@@ -494,30 +508,30 @@ class Contr {
         case RED:
           {
             (c_button[1]) ? (writeout = LOW) : (writeout = HIGH);
-            digitalWrite(m_ps4pins[0]["r2button"], writeout);
+            digitalWrite(m_ps4digipins[0]["r2button"], writeout);
 
             // original definition was probably wrong: (accx[1] > CENTER + MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
             (is_above_margin(accx[1]) && is_above_margin(accy[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["circbutton"], writeout);
+            digitalWrite(m_ps4digipins[0]["circbutton"], writeout);
             Bbuffer[9] = writebuffer;
 
             (is_above_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout  = HIGH, writebuffer = MAX) : (writeout  = LOW, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["r1button6"] , writeout);
+            digitalWrite(m_ps4digipins[0]["r1button6"] , writeout);
             Bbuffer[7] = writebuffer;
             Bbuffer[8] = writebuffer;
 
             (is_below_margin(accx[1]) && is_above_margin(accy[1])) ? (writeout = HIGH, writebuffer = MAX) : (writeout = LOW, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["l1button5"], writeout);
+            digitalWrite(m_ps4digipins[0]["l1button5"], writeout);
             Bbuffer[4] = writebuffer;
             Bbuffer[5] = writebuffer;
 
             (is_above_margin(accx[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["r2button"], writeout);
+            digitalWrite(m_ps4digipins[0]["r2button"], writeout);
             Bbuffer[10] = writebuffer;
             Bbuffer[11] = writebuffer;
 
             (is_below_margin(accx[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["l2button"], writeout);
+            digitalWrite(m_ps4digipins[0]["l2button"], writeout);
             Bbuffer[1] = writebuffer;
             Bbuffer[2] = writebuffer;
 
@@ -525,17 +539,17 @@ class Contr {
 
             // original definition was probably wrong: if (accx[1] < CENTER - MARGIN && accy[1] > CENTER - MARGIN && accy[1] < CENTER + MARGIN)
             (is_below_margin(accx[1]) && is_above_margin(accy[1]) && is_below_margin(accy[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["sqbutton"], writeout);
+            digitalWrite(m_ps4digipins[0]["sqbutton"], writeout);
             Bbuffer[3] = writebuffer;
 
             // original definition was probably wrong: if (accy[1] > CENTER + MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN )
             (is_above_margin(accy[1]) && is_above_margin(accx[1]) && is_below_margin(accx[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["tributton"], writeout);
+            digitalWrite(m_ps4digipins[0]["tributton"], writeout);
             Bbuffer[6] = writebuffer;
 
             // original definition was probably wrong: if (accy[1] < CENTER - MARGIN && accx[1] > CENTER - MARGIN && accx[1] < CENTER + MARGIN )
             (is_below_margin(accy[1]) && is_above_margin(accx[1]) && is_below_margin(accx[1])) ? (writeout = LOW, writebuffer = MAX) : (writeout = HIGH, writebuffer = MIN);
-            digitalWrite(m_ps4pins[0]["xbutton"], writeout);
+            digitalWrite(m_ps4digipins[0]["xbutton"], writeout);
             Bbuffer[0] = writebuffer;
 
             for (int i = 0; i < 12; i++) {
@@ -549,7 +563,7 @@ class Contr {
             if (Rreleased == false) {
 
               if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 0) {
-                digitalWrite(m_ps4pins[0]["r1button6"], HIGH);  // R1
+                digitalWrite(m_ps4digipins[0]["r1button6"], HIGH);  // R1
                 R1state = 1;
                 Rreleased = 1;
                 Bbuffer[7] = MAX;
@@ -557,7 +571,7 @@ class Contr {
               }
 
               else if (accx[1] > CENTER + MARGIN && accy[1] > CENTER + MARGIN && R1state == 1) {
-                digitalWrite(m_ps4pins[0]["r1button6"], LOW);
+                digitalWrite(m_ps4digipins[0]["r1button6"], LOW);
                 R1state = 0;
                 Rreleased = 1;
                 Bbuffer[7] = MIN;
@@ -566,14 +580,14 @@ class Contr {
 
 
               else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 0) {
-                digitalWrite(m_ps4pins[0]["l1button5"] , HIGH); // L1
+                digitalWrite(m_ps4digipins[0]["l1button5"] , HIGH); // L1
                 L1state = 1;
                 Rreleased = 1;
                 Bbuffer[4] = MAX;
                 Bbuffer[5] = MAX;
               }
               else if (accx[1] < CENTER - MARGIN && accy[1] > CENTER + MARGIN && L1state == 1) {
-                digitalWrite(m_ps4pins[0]["l1button5"], LOW);
+                digitalWrite(m_ps4digipins[0]["l1button5"], LOW);
                 L1state = 0;
                 Rreleased = 1;
                 Bbuffer[4] = MIN;
@@ -581,14 +595,14 @@ class Contr {
               }
 
               else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 0) {
-                digitalWrite(m_ps4pins[0]["r2button"], LOW); // R2
+                digitalWrite(m_ps4digipins[0]["r2button"], LOW); // R2
                 R2state = 1;
                 Rreleased = 1;
                 Bbuffer[10] = MAX;
                 Bbuffer[11] = MAX;
               }
               else if (accx[1] > CENTER + MARGIN && accy[1] < CENTER - MARGIN && R2state == 1) {
-                digitalWrite(m_ps4pins[0]["r2button"], HIGH);
+                digitalWrite(m_ps4digipins[0]["r2button"], HIGH);
                 R2state = 0;
                 Rreleased = 1;
                 Bbuffer[10] = MIN;
@@ -596,14 +610,14 @@ class Contr {
               }
 
               else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 0) {
-                digitalWrite(m_ps4pins[0]["l2button"], LOW); // L2
+                digitalWrite(m_ps4digipins[0]["l2button"], LOW); // L2
                 L2state = 1;
                 Rreleased = 1;
                 Bbuffer[1] = MAX;
                 Bbuffer[2] = MAX;
               }
               else if (accx[1] < CENTER - MARGIN && accy[1] < CENTER - MARGIN && L2state == 1) {
-                digitalWrite(m_ps4pins[0]["l2button"], HIGH);
+                digitalWrite(m_ps4digipins[0]["l2button"], HIGH);
                 L2state = 0;
                 Rreleased = 1;
                 Bbuffer[1] = MIN;
@@ -713,14 +727,14 @@ class Modps4contr : protected Contr {
     }
 
     void readInput() {
-      accx[0] = map(analogRead(m_analogpins["accx1"]), 0, 832, 0, 255);
-      accy[0] = map(analogRead(m_analogpins["accy1"]), 0, 832, 0, 255);
-      accx[1] = map(analogRead(m_analogpins["accx2"]), 0, 832, 0, 255);
-      accy[1] = map(analogRead(m_analogpins["accy2"]), 0, 832, 0, 255);
-      c_button[0] = !digitalRead(m_analogpins["c_button1"]);
-      z_button[0] = !digitalRead(m_analogpins["z_button1"]);
-      c_button[1] = !digitalRead(m_analogpins["c_button2"]);
-      z_button[1] = !digitalRead(m_analogpins["z_button2"]);
+      accx[0] = map(analogRead(m_ps4analogpins["accx1"]), 0, 832, 0, 255);
+      accy[0] = map(analogRead(m_ps4analogpins["accy1"]), 0, 832, 0, 255);
+      accx[1] = map(analogRead(m_ps4analogpins["accx2"]), 0, 832, 0, 255);
+      accy[1] = map(analogRead(m_ps4analogpins["accy2"]), 0, 832, 0, 255);
+      c_button[0] = !digitalRead(m_ps4analogpins["c_button1"]);
+      z_button[0] = !digitalRead(m_ps4analogpins["z_button1"]);
+      c_button[1] = !digitalRead(m_ps4analogpins["c_button2"]);
+      z_button[1] = !digitalRead(m_ps4analogpins["z_button2"]);
     }
 };
 
