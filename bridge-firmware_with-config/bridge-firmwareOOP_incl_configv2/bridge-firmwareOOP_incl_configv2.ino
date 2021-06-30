@@ -159,7 +159,7 @@ PinAllocation tempinit[] =
                                { 2, "Second category" } };
         categories[1] = tmpinit[0];
         categories[2] = tmpinit[1];
-        */
+*/
 
 std::map<std::string, PinAllocation> mPinAlloc;
 
@@ -210,7 +210,7 @@ class SDreader {
     const uint8_t rs = 16, en = 17, d4 = 23, d5 = 25, d6 = 27, d7 = 29;
     LiquidCrystal lcd;
 
-//    static stringstream ss;
+    //    static stringstream ss;
 
   public:
     SDreader() : lcd(rs, en, d4, d5, d6, d7) {
@@ -316,10 +316,18 @@ class CSVreader {
 
         }
     */
-  void updateMapping(std::map<std::string,PinAllocation> &origMapping, std::map<std::string,std::string> &newMapping) {
-    
-  }
-    
+    void updateMapping(std::map<std::string, PinAllocation> &origMapping, std::map<std::string, std::string> &newMapping) {
+
+      for (auto const& x : origMapping)
+      {
+        std::cout << x.first  // string (key)
+                  << ':'
+                  << x.second // string's value
+                  << std::endl;
+      }
+
+    }
+
     void checkMap(std::map<std::pair<std::string, uint8_t>, std::string>  &psMap, std::map<std::pair<std::string, uint8_t>, std::string>  &customMap) {
       std::map<std::pair<std::string, uint8_t>, std::string>::iterator custMapIt = customMap.begin();
       while (custMapIt != customMap.end())
@@ -383,7 +391,7 @@ class Contr {
             digitalWrite(all.pinnum, LOW);
           }
         }
-        else if (all.PinType == ANALOGPIN){
+        else if (all.PinType == ANALOGPIN) {
           pinMode(all.pinnum, INPUT_PULLUP);
         }
         else if (all.PinType == PWMPIN) {
@@ -770,10 +778,10 @@ class Modps4contr : protected Contr {
 Contr *controller = NULL;
 
 void setup() {
-  for(const auto& pinalloc : tempinit) {
-  mPinAlloc.insert({pinAlloc.origps4func, pinalloc});
-  //std::cout << student.name << std::endl;
-}
+  for (const auto& pinalloc : tempinit) {
+    mPinAlloc.insert({pinAlloc.origps4func, pinalloc});
+    //std::cout << student.name << std::endl;
+  }
 #ifdef DEBUG
   Serial.begin(115200);   // debug info to usb serial
 #endif
