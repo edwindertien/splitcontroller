@@ -105,54 +105,54 @@ const Device dv = PS4CONTR;
 
 enum Mode {GREEN, RED, BLUE};
 enum PinType {DIGITALPIN, ANALOGPIN, PWMPIN};
+enum SplitContrButtons {JLJOY, RJOY, LBTN1, LBTN2, RBTN1, RBTN2};
 
 const uint8_t greenLED = 13;
 const uint8_t redLED = 12;
 
 struct PinAllocation {
-  std::string     origps4func;
+  std::string     btn;
   uint8_t           pinnum;
   PinType         pinType;
-  std::string     newfunc;
+  std::string     mappedps4func;
 };
 
-//std::vector<PinAllocation> pinalloc =
-PinAllocation tempinit[] =
+std::vector<PinAllocation> pinalloc =
 {
-  {"joyRXax2", 2, DIGITALPIN, "foo"},
-  {"joyRYax1", 3, DIGITALPIN, "foo"},
-  {"joyRZb11", 4, DIGITALPIN,  "foo"},
-  {"joyLZb12", 7, DIGITALPIN,  "foo"},
-  {"joyLYax4", 6, DIGITALPIN,  "foo"},
-  {"joyLXax3", 5, DIGITALPIN,  "foo"},
-  {"sqbutton", 26, DIGITALPIN,  "foo"},
-  {"circbutton", 28, DIGITALPIN,  "foo"},
-  {"psbutton", 30, DIGITALPIN,  "foo"},
-  {"l2button", 32, DIGITALPIN,  "foo"},
-  {"r2button", 34, DIGITALPIN,  "foo"},
-  {"tributton", 36, DIGITALPIN,  "foo"},
-  {"xbutton", 38, DIGITALPIN,  "foo"},
-  {"lhat", 40, DIGITALPIN,  "foo"},
-  {"rhat", 42, DIGITALPIN, "foo"},
-  {"uhat", 44, DIGITALPIN, "foo"},
-  {"dhat", 46, DIGITALPIN, "foo"},
-  {"r1button6", 48, DIGITALPIN,  "foo"},
-  {"l1button5", 50, DIGITALPIN, "foo"},
-  {"optbutton",  52, DIGITALPIN, "foo"},
-  {"shrebutton", A8, DIGITALPIN, "foo"},
-  {"accx1", A5, ANALOGPIN,  "foo"},
-  {"accy1", A4, ANALOGPIN,  "foo"},
-  {"accx2", A1, ANALOGPIN,  "foo"},
-  {"accy2", A0, ANALOGPIN,  "foo"},
-  {"c_button1", A6, ANALOGPIN,  "foo"},
-  {"z_button1", A7, ANALOGPIN,  "foo"},
-  {"c_button2", A2, ANALOGPIN,  "foo"},
-  {"z_button2", A3, ANALOGPIN,  "foo"},
-  {"PWM1", 2, PWMPIN, "foo"},
-  {"PWM2", 3, PWMPIN, "foo"},
-  {"PWM3", 5, PWMPIN, "foo"},
-  {"PWM4", 6, PWMPIN, "foo"},
-  {"PWM5", 7, PWMPIN, "foo"}
+  {"joyRXax2", 2, DIGITALPIN},
+  {"joyRYax1", 3, DIGITALPIN},
+  {"joyRZb11", 4, DIGITALPIN},
+  {"joyLZb12", 7, DIGITALPIN},
+  {"joyLYax4", 6, DIGITALPIN},
+  {"joyLXax3", 5, DIGITALPIN},
+  {"sqbutton", 26, DIGITALPIN},
+  {"circbutton", 28, DIGITALPIN},
+  {"psbutton", 30, DIGITALPIN},
+  {"l2button", 32, DIGITALPIN},
+  {"r2button", 34, DIGITALPIN},
+  {"tributton", 36, DIGITALPIN},
+  {"xbutton", 38, DIGITALPIN},
+  {"lhat", 40, DIGITALPIN},
+  {"rhat", 42, DIGITALPIN},
+  {"uhat", 44, DIGITALPIN},
+  {"dhat", 46, DIGITALPIN},
+  {"r1button6", 48, DIGITALPIN},
+  {"l1button5", 50, DIGITALPIN},
+  {"optbutton",  52, DIGITALPIN},
+  {"shrebutton", A8, DIGITALPIN},
+  {"accx1", A5, ANALOGPIN},
+  {"accy1", A4, ANALOGPIN},
+  {"accx2", A1, ANALOGPIN},
+  {"accy2", A0, ANALOGPIN},
+  {"c_button1", A6, ANALOGPIN},
+  {"z_button1", A7, ANALOGPIN},
+  {"c_button2", A2, ANALOGPIN},
+  {"z_button2", A3, ANALOGPIN},
+  {"PWM1", 2, PWMPIN},
+  {"PWM2", 3, PWMPIN},
+  {"PWM3", 5, PWMPIN},
+  {"PWM4", 6, PWMPIN},
+  {"PWM5", 7, PWMPIN}
 };
 
 /* category tmpinit[] = { { 1, "First category" },
@@ -161,7 +161,7 @@ PinAllocation tempinit[] =
         categories[2] = tmpinit[1];
 */
 
-std::map<std::string, PinAllocation> mPinAlloc;
+std::map<SplitContrButtons, PinAllocation> mPinAlloc;
 
 
 
@@ -320,10 +320,13 @@ class CSVreader {
 
       for (auto const& x : origMapping)
       {
-        std::cout << x.first  // string (key)
-                  << ':'
-                  << x.second // string's value
-                  << std::endl;
+        std::cout << x.first << std::endl; // string (key)
+          std::string test = x.second.newfunc;
+                //  << ':'
+                //  std::cout << x.second << std::endl ;// string's value
+                 // << std::endl;
+               //  newMapping.find(thingie);
+
       }
 
     }
