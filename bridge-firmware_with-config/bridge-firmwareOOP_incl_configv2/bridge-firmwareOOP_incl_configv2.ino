@@ -66,7 +66,7 @@
 #include <map>
 #include<vector>
 #include<iterator>
-#include <sstream>
+#include <fstream>
 
 // below is for reading CSV files from SD
 #include <limits.h>
@@ -117,6 +117,14 @@ struct PinAllocation {
   std::string     mappedps4func;
 };
 
+struct custCSVmapping
+{
+  string menu;
+  string side;
+  string btn;
+  string assgndto;
+};
+
 std::vector<PinAllocation> pinalloc =
 {
   {"joyRXax2", 2, DIGITALPIN},
@@ -155,36 +163,7 @@ std::vector<PinAllocation> pinalloc =
   {"PWM5", 7, PWMPIN}
 };
 
-/* category tmpinit[] = { { 1, "First category" },
-                               { 2, "Second category" } };
-        categories[1] = tmpinit[0];
-        categories[2] = tmpinit[1];
-*/
-
 std::map<SplitContrButtons, PinAllocation> mPinAlloc;
-
-
-
-//mp.insert({ 2, 30 });
-
-
-
-/*
-  vector<Person> parr1 = {{"John", "Cooper", 32},
-  {"Theo", "Parrot", 23},
-  {"Kim", "Colbert", 53},
-  {"Aun", "Chao", 43},
-
-  vector<Person> parr3(parr1.begin(), parr1.end());
-
-
-
-  for (const auto &arr : parr3) {
-    cout << "Name: " << arr.name << endl
-    << "Surname: " << arr.surname << endl
-    << "Age: " << arr.age << endl;
-  }
-*/
 
 unsigned long loopTime;
 
@@ -295,9 +274,10 @@ class SDreader {
 
 class CSVreader {
   protected:
-
+      vector <custCSVmapping> allcstmMappings;
+      custCSVmapping cstmMapping;
+      
   public:
-
     CSVreader() {
       SDreader sdreader;
       // sdreader -> callfunc();
@@ -316,16 +296,36 @@ class CSVreader {
 
         }
     */
-    void updateMapping(std::map<std::string, PinAllocation> &origMapping, std::map<std::string, std::string> &newMapping) {
 
+    void readFile() {
+      ifstream csvfile;
+      csvfile.open("test_config_file.csv");
+      string temp;
+
+      while (!csvfile.eof()) {
+        getline(csvfile, cstmMapping.name, ',');
+        getline(csvfile, cstmMapping.station_name, ',');
+        getline(csvfile, temp, ',');
+        cstmMapping.elevation = stod(temp);
+
+        allcstmMappings.push_back(cstmMapping);
+      }
+      csvfile.close();
+    }
+    
+    void updateMapping(std::vector<PinAllocation> &origMapping, std::map<std::string, std::string> &newMapping) {
+
+
+      //  std::map<SplitContrButtons, PinAllocation> mPinAlloc; // already init
       for (auto const& x : origMapping)
       {
-        std::cout << x.first << std::endl; // string (key)
-          std::string test = x.second.newfunc;
-                //  << ':'
-                //  std::cout << x.second << std::endl ;// string's value
-                 // << std::endl;
-               //  newMapping.find(thingie);
+        newMapping.find(origMapping.btn);
+        //std::cout << x.first << std::endl; // string (key)
+        //std::string test = x.second.newfunc;
+        //  << ':'
+        //  std::cout << x.second << std::endl ;// string's value
+        // << std::endl;
+        //  newMapping.find(thingie);
 
       }
 
@@ -379,13 +379,7 @@ class Contr {
       pinMode(m_ps4pins[0]["greenLED"], OUTPUT); // greenLED 13
       pinMode(9, OUTPUT);
 
-      //vector<PinAllocation> pinalloc1(pinalloc.begin(), pinalloc.end());
-      vector<PinAllocation> pinalloc1(pinalloc.begin(), pinalloc.end());
-
-
-      // loop thru map access ->second.struct
-
-      for (const auto &all : pinalloc1) {
+      for (const auto &all : pinalloc) {
         if (all.PinType == DIGITALPIN) {
           pinMode(all.pinnum, OUTPUT);
           digitalWrite(all.pinnum, HIGH);
@@ -781,10 +775,7 @@ class Modps4contr : protected Contr {
 Contr *controller = NULL;
 
 void setup() {
-  for (const auto& pinalloc : tempinit) {
-    mPinAlloc.insert({pinAlloc.origps4func, pinalloc});
-    //std::cout << student.name << std::endl;
-  }
+
 #ifdef DEBUG
   Serial.begin(115200);   // debug info to usb serial
 #endif
