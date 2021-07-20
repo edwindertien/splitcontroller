@@ -66,7 +66,7 @@
 #include <map>
 #include<vector>
 #include<iterator>
-#include <fstream>
+//#include <fstream>
 
 // below is for reading CSV files from SD
 #include <limits.h>
@@ -90,10 +90,7 @@ File file;
 Adafruit_NeoPixel leftRing = Adafruit_NeoPixel(12, 53, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel rightRing = Adafruit_NeoPixel(12, 51, NEO_GRB + NEO_KHZ800);
 
-
-
 enum Device {NUNCHUCK, PS4CONTR};
-
 
 #if NUNCHCK > 0
 #include <NunchuckFunctions.h>
@@ -115,15 +112,19 @@ struct PinAllocation {
   uint8_t           pinnum;
   PinType         pinType;
   std::string     mappedps4func;
+  bool operator==(const PinAllocation& r) const   {
+    return btn == r.btn;
+  }
 };
 
 struct custCSVmapping
 {
-  string menu;
-  string side;
-  string btn;
-  string assgndto;
+  std::string menu;
+  std::string side;
+  std::string btn;
+  std::string assgndto;
 };
+
 
 std::vector<PinAllocation> pinalloc =
 {
@@ -163,7 +164,7 @@ std::vector<PinAllocation> pinalloc =
   {"PWM5", 7, PWMPIN}
 };
 
-std::map<SplitContrButtons, PinAllocation> mPinAlloc;
+std::map<custCSVmapping, PinAllocation> mPinAlloc;
 
 unsigned long loopTime;
 
@@ -274,31 +275,19 @@ class SDreader {
 
 class CSVreader {
   protected:
-      vector <custCSVmapping> allcstmMappings;
-      custCSVmapping cstmMapping;
-      
+    std::ifstream csvfile;
+    custCSVmapping cstmMapping;
+
   public:
+    std::vector <custCSVmapping> allcstmMappings;
+
     CSVreader() {
       SDreader sdreader;
       // sdreader -> callfunc();
     }
-    /*check compat map type
-        void checkMap(std::map<std::string, uint8_t> &psMap, std::map<std::string, std::string> &customMap) {
-          std::map<std::string, std::string>::iterator custMapIt = customMap.begin();
-          while (custMapIt != customMap.end())
-          {
-            std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
-            itPsMap = customMap.find('b');
-            if (itPsMap != customMap.end())
-              // here was erase
-              custMapIt++;
-          }
-
-        }
-    */
 
     void readFile() {
-      ifstream csvfile;
+
       csvfile.open("test_config_file.csv");
       string temp;
 
@@ -312,20 +301,29 @@ class CSVreader {
       }
       csvfile.close();
     }
-    
-    void updateMapping(std::vector<PinAllocation> &origMapping, std::map<std::string, std::string> &newMapping) {
 
+    void updateMapping(std::vector<PinAllocation> &origMapping, std::vector<custCSVmapping> &newMapping) {
 
-      //  std::map<SplitContrButtons, PinAllocation> mPinAlloc; // already init
-      for (auto const& x : origMapping)
+      // std::map<custCSVmapping, PinAllocation> mPinAlloc;
+      for (auto const& x : newMapping)
       {
-        newMapping.find(origMapping.btn);
-        //std::cout << x.first << std::endl; // string (key)
-        //std::string test = x.second.newfunc;
-        //  << ':'
-        //  std::cout << x.second << std::endl ;// string's value
-        // << std::endl;
-        //  newMapping.find(thingie);
+        std::find_if(origMapping.begin(), origMapping.end(), [ = ](const PinAllocation & c)
+        {
+          return k == c.btn;
+        })
+
+        auto it = std::find(myvector.begin(), myvector.end(), 3);
+        if (it != myvector.end()) {
+          std::cout << "Element found in myvector: " << *it << '\n';
+        } else {
+          std::cout << "Element not found in myvector\n";
+        }
+
+
+        // try to find x.btn in origMapping, if not: next
+        // add both x and found item to map mPinAlloc
+
+
 
       }
 
