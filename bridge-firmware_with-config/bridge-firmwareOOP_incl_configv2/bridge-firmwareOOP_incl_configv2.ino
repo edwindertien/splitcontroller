@@ -66,7 +66,6 @@
 #include <map>
 #include<vector>
 #include<iterator>
-//#include <fstream>
 
 // below is for reading CSV files from SD
 #include <limits.h>
@@ -275,7 +274,7 @@ class SDreader {
 
 class CSVreader {
   protected:
-    std::ifstream csvfile;
+    File csvfile;
     custCSVmapping cstmMapping;
 
   public:
@@ -286,67 +285,88 @@ class CSVreader {
       // sdreader -> callfunc();
     }
 
-    void readFile() {
-
-      csvfile.open("test_config_file.csv");
-      string temp;
-
-      while (!csvfile.eof()) {
-        getline(csvfile, cstmMapping.name, ',');
-        getline(csvfile, cstmMapping.station_name, ',');
-        getline(csvfile, temp, ',');
-        cstmMapping.elevation = stod(temp);
-
-        allcstmMappings.push_back(cstmMapping);
-      }
-      csvfile.close();
-    }
-
-    void updateMapping(std::vector<PinAllocation> &origMapping, std::vector<custCSVmapping> &newMapping) {
-
-      // std::map<custCSVmapping, PinAllocation> mPinAlloc;
-      for (auto const& x : newMapping)
-      {
-        std::find_if(origMapping.begin(), origMapping.end(), [ = ](const PinAllocation & c)
-        {
-          return k == c.btn;
-        })
-
-        auto it = std::find(myvector.begin(), myvector.end(), 3);
-        if (it != myvector.end()) {
-          std::cout << "Element found in myvector: " << *it << '\n';
-        } else {
-          std::cout << "Element not found in myvector\n";
+    bool readLine(File &f, char* line, size_t maxLen) {
+      for (size_t n = 0; n < maxLen; n++) {
+        int c = f.read();
+        if ( c < 0 && n == 0) return false;  // EOF
+        if (c < 0 || c == '\n') {
+          line[n] = 0;
+          return true;
         }
-
-
-        // try to find x.btn in origMapping, if not: next
-        // add both x and found item to map mPinAlloc
-
-
-
+        line[n] = c;
       }
-
+      return false; // line too long
     }
 
-    void checkMap(std::map<std::pair<std::string, uint8_t>, std::string>  &psMap, std::map<std::pair<std::string, uint8_t>, std::string>  &customMap) {
-      std::map<std::pair<std::string, uint8_t>, std::string>::iterator custMapIt = customMap.begin();
-      while (custMapIt != customMap.end())
-      {
-        // std::cout << custMapIt->first << ":" << custMapIt->second << std::endl;
-
-        ss << custMapIt->first;
-        //ss<<”Hello,World”;
-        cout << ss.str();
-        Serial.print("Checkmap:");
-        Serial.println(custMapIt->first.first);
-        itPsMap = customMap.find('b');
-        if (itPsMap != customMap.end())
-          // here was erase
-          custMapIt++;
+    bool readVals(std::string* v1, std::string* v2, std::string* v3, std::string* v4) {
+      char line[40], *ptr, *str;
+      if (!readLine(file, line, sizeof(line))) {
+        return false;  // EOF or too long
       }
-
+      *v1 = strtol(line, &ptr, 10);
+      if (ptr == line) return false;  // bad number if equal
+      while (*ptr) {
+        if (*ptr++ == ',') break;
+      }
+      *v2 = strtol(ptr, &str, 10);
+      return str != ptr;  // true if number found
     }
+
+
+    void readFile() {
+      csvfile = SD.open("test_config_file.csv", FILE_READ);
+
+      std::string menu, side, button, assignedto;
+      long x, y;
+      if (!SD.begin(SS)) {
+        Serial.println("begin error");
+        return;
+      }
+      if (!csvfile) {
+        Serial.println("open error");
+        return;
+      }
+      while (readVals(&menu, &side, &button, &assignedto)) {
+        Serial.print("x: ");
+        Serial.println(menu);
+        Serial.print("y: ");
+        Serial.println(button);
+        Serial.println();
+      }
+      Serial.println("Done");
+    }
+    csvfile.close();
+}
+
+void updateMapping(std::vector<PinAllocation> &origMapping, std::vector<custCSVmapping> &newMapping) {
+
+  // std::map<custCSVmapping, PinAllocation> mPinAlloc;
+  for (auto const& x : newMapping)
+  {
+    std::find_if(origMapping.begin(), origMapping.end(), [ = ](const PinAllocation & c)
+    {
+      return k == c.btn;
+    })
+
+    auto it = std::find(myvector.begin(), myvector.end(), 3);
+    if (it != myvector.end()) {
+      std::cout << "Element found in myvector: " << *it << '\n';
+    } else {
+      std::cout << "Element not found in myvector\n";
+    }
+
+
+    // try to find x.btn in origMapping, if not: next
+    // add both x and found item to map mPinAlloc
+
+
+
+  }
+
+}
+
+
+
 };
 
 
