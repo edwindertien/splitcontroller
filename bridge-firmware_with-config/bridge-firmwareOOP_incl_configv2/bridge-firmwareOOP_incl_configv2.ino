@@ -279,39 +279,23 @@ class CSVreader {
 
   public:
     std::vector <custCSVmapping> allcstmMappings;
+    std::string menu, side, button, assigndto, mode;
 
     CSVreader() {
       SDreader sdreader;
+
       // sdreader -> callfunc();
     }
 
-    bool readLine(File &f, char* line, size_t maxLen) {
-      for (size_t n = 0; n < maxLen; n++) {
-        int c = f.read();
-        if ( c < 0 && n == 0) return false;  // EOF
-        if (c < 0 || c == '\n') {
-          line[n] = 0;
-          return true;
-        }
-        line[n] = c;
+    void readVals() {
+      while (file.read()) {
+        getline(file, menu, ',');
+        getline(file, side, ',') ;
+        getline(file, button, ',') ;
+        getline(file, assigndto, ',');
+        getline(file, mode, '\n');
       }
-      return false; // line too long
     }
-
-    bool readVals(std::string* v1, std::string* v2, std::string* v3, std::string* v4) {
-      char line[40], *ptr, *str;
-      if (!readLine(file, line, sizeof(line))) {
-        return false;  // EOF or too long
-      }
-      *v1 = strtol(line, &ptr, 10);
-      if (ptr == line) return false;  // bad number if equal
-      while (*ptr) {
-        if (*ptr++ == ',') break;
-      }
-      *v2 = strtol(ptr, &str, 10);
-      return str != ptr;  // true if number found
-    }
-
 
     void readFile() {
       csvfile = SD.open("test_config_file.csv", FILE_READ);
