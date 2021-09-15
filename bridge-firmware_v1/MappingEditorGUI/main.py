@@ -1,20 +1,20 @@
 #!/usr/bin/python
 
 import sys
-import csv
-import pandas
-from PyQt5.QtWidgets import QAction, QWidget, QApplication, QDialog, QGridLayout, QLabel, QLineEdit, QFileDialog, QScrollArea, QPushButton, QComboBox
+#import csv
+import pandas as pd
+from PyQt5.QtWidgets import QMessageBox, QAction, QWidget, QApplication, QDialog, QGridLayout, QLabel, QLineEdit, QFileDialog, QScrollArea, QPushButton, QComboBox
 from PyQt5.Qt import QHBoxLayout, QWindow, QMainWindow, QVBoxLayout
 
 ps4btns = ["joyRXax2", "joyRYax1", "joyRZb11", "joyLZb12", "joyLYax4", "joyLXax3", "sqbutton", "circbutton", "psbutton", "l2button", "r2button", "tributton", "xbutton", "lhat", "rhat", "uhat", "dhat", "r1button6", "l1button5", "optbutton", "accx1", "accy1", "accx2", "accy2", "c_button1", "z_button1", "c_button2", "z_button2", "shrebutton", "PWM1", "PWM2", "PWM3", "PWM4", "PWM5"]
 menus = []
 
 class MainWindow(QMainWindow):
-
+    path = None
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-
+        dataHandler = DataHandler()
         self.initUI()
 
     def initUI(self):
@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         self.hlayoutsub2 = QHBoxLayout()
         self.hlayoutsub3 = QHBoxLayout()
         self.hlayoutsub4 = QHBoxLayout()
+        self.hlayoutsubBttm = QHBoxLayout()
         self.widget = QWidget()
         self.widget.setLayout(self.vlayoutmain)
         # setup of top layout
@@ -57,6 +58,10 @@ class MainWindow(QMainWindow):
         self.gridlayout = QGridLayout(self.scrollAreaWidgetContents)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.hlayoutsub5.addWidget(self.scrollArea)
+
+        # read CSV data
+
+        
         self.gridlayout.setColumnStretch(1, 4)
         self.gridlayout.setColumnStretch(2, 4)
         self.gridlayout.addWidget(QPushButton('1'), 0, 0)
@@ -76,10 +81,11 @@ class MainWindow(QMainWindow):
         self.hlayoutsub2.addStretch(1)
 
         # for save file later
-        saveFile = QAction("&Save File", self)
-        saveFile.setShortcut("Ctrl+S")
-        saveFile.setStatusTip('Save File')
-        saveFile.triggered.connect(self.file_save)
+        self.saveButton = QPushButton("Save edited menu")
+        self.saveButton.clicked.connect(self.file_save)
+        self.hlayoutsubBttm.addWidget(self.saveButton)
+
+        
 
         # finally
 
@@ -89,6 +95,7 @@ class MainWindow(QMainWindow):
         self.vlayoutmain.addLayout(self.hlayoutsub3)
         self.vlayoutmain.addLayout(self.hlayoutsub4)
         self.vlayoutmain.addLayout(self.hlayoutsub5)
+        self.vlayoutmain.addLayout(self.hlayoutsubBttm)
 
 
         self.vlayoutmain.addStretch(1)
@@ -100,10 +107,20 @@ class MainWindow(QMainWindow):
         self.show()
 
     def open(self):
-        path = QFileDialog.getOpenFileName(self, 'Open a file', '',
+        nwpath = QFileDialog.getOpenFileName(self, 'Open a file', '',
                                            'All Files (*.*)')
-        if path != ('', ''):
-            print("File path : " + path[0])
+        if self.path != ('', ''):
+            print("File path : " + nwpath[0])
+            self.path = nwpath[0]
+            csvdata = dataHandler.readCSV(self.path)
+            if csvdata is pd.DataFrame:
+                pass
+            elif csvdata is str:
+                alrt = QMessageBox()
+                alrt.setWIndowTitle("An error occurred")
+                alrt.setText(csvdata)
+
+            
 
     def choice(self):
         list = []
@@ -120,20 +137,18 @@ class MainWindow(QMainWindow):
         file.close()
 
 class DataHandler():
-    def __init__():
-        pass
-
     def readCSV(path):
         try:
             # change 'Name' with first column name, so first word in csv
-            df = pandas.read_csv(path, index_col='Name')
+            df = pd.read_csv(path, index_col='menu')
             print(df)
+            return df
         except:
             msg = "Failed to read CSV"
-        finally:
-            pass
+            return msg
+        
     def writeCSV(df):
-        df.to_csv('mapping_modified.csv')
+        pd.df.to_csv('mapping_modified.csv')
 
 if __name__ == '__main__':
 
