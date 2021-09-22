@@ -200,7 +200,7 @@ std::map<custCSVmapping, PinAllocation> mPinAlloc =
   {{green,left ,none,PWM2,toggle},{"PWM2", 3, PWMPIN}},
   {{green,left ,none,PWM3,toggle},{"PWM3", 5, PWMPIN}},
   {{green,left ,none,PWM3,toggle},{"PWM4", 6, PWMPIN}},
-  {{green,left ,none,PWM3,toggle},{"PWM5", 7, PWMPIN},{}}
+  {{green,left ,none,PWM3,toggle},{"PWM5", 7, PWMPIN}}
 };
 
 
