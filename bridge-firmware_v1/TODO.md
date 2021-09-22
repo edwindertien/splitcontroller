@@ -27,11 +27,17 @@ I chose the custCSVmapping as key and the PinAllocation as value because this wo
 ### To do: firmware
 
 - Finetune existing code
-  - Clean up SDreader class.
+  - Clean up SDreader class. This was dummy code so it has to be adapted for this projects' purpose
   - Adapt SDreader class to browse CSV files on SD.
   - Clean up CSV reader class.
-  - Safely update mPinAlloc from CSVreader method
-  - Update Controller class and derived classes to use the mPinAlloc mapping instead of original m_ps4pins
+  - Implement std::map mPinAlloc updating in CSV reader class method. Loop through map to look for element with something similar to following concise code:
+  >  for (auto & element : pinalloc) {
+        // if element.btn == csvElement.assgndto {
+      // append mPinAlloc, csvElement, element}
+        element.doSomething ();
+      }
+
+  - Update Controller class and derived classes to use the mPinAlloc mapping instead of original m_ps4pins in "operate()" and other methods
 
 
 ### CSV GUI program, code explanation
