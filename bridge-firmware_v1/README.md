@@ -16,7 +16,8 @@ shifter (again) to operate the SD card on 3.3V. (I tried to make it work powered
 although the display works, the SD card does not. The control board is hence powered by 5.0 V)
 
 The following pin-out for the two 10-way EXP connectors on the display board are used:
- ______________________________________
+
+```______________________________________
 | EXP1 connector pin | Arduino DUE pin |
 | 1 buzzer           | 37              |
 | 2 ENCODER-button   | 35              |
@@ -29,7 +30,7 @@ The following pin-out for the two 10-way EXP connectors on the display board are
 | 9 GND              | GND             |
 | 10 VCC             | +5V (not 3.3V!) |
 |____________________|_________________|
- ______________________________________
+______________________________________
 | EXP2 connector pin | Arduino DUE pin |
 | 1 MISO             | ISP pin 1 MISO  |
 | 2 SCK              | ISP pin 3 SCK   |
@@ -42,6 +43,7 @@ The following pin-out for the two 10-way EXP connectors on the display board are
 | 9 GND              | GND             |
 | 10 NC              |                 |
 |____________________|_________________|
+```
 
 (cc) e13, May 2021
 
@@ -65,7 +67,7 @@ filters (10uF, 1k) have been used to make the analog signals
 
 E13 - November 2020
 --
-
+```
 Original nunchuck:  signal:    ext. cable    black nunchuck:
 white -             ground     orange        white
 red -               3.3+v      black         red
@@ -78,12 +80,14 @@ SCL -|     |- SC1
 SDA -|     |- SD1
 VCC -|     |- GND
 SD0 -|_____|- SC0
+```
 
 both the nunchucks and the PCA95040 can be powered from pins, 5V
 For I2C using internal pull-up is sufficient
 
 for the wired handheld controllers the following pinout
 has been used: on RJ45 connectors:
+```
 
 1 analog_X
 2 analog_Y
@@ -93,3 +97,4 @@ has been used: on RJ45 connectors:
 6 GND (potentiometer)
 7 switch_1
 8 switch_2
+```
