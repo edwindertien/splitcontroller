@@ -215,6 +215,7 @@ unsigned char Dbuffer[12];
 boolean L1state, R1state, R2state, L2state, Rreleased;
 boolean LeftReleased, RightReleased;
 
+// this class needs to be cleaned up, it hasn't been adjusted to this projects' purpose
 class SDreader {
   private:
     const uint8_t BUTTON = 41;
