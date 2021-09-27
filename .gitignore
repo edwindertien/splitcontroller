@@ -1,0 +1,9 @@
+# ignore all logs
+*.log
+
+# ignore sysadmin bash files
+*.sh
+
+# ignore test folders
+cad-tests/**
+bridge-firmwareOOP/**

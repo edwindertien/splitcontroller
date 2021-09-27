@@ -1,2 +1,0 @@
-
-Error during build: opening sketch: no valid sketch found in /home/lonn/splitcontroller/bridge-firmware_with-config: missing /home/lonn/splitcontroller/bridge-firmware_with-config/bridge-firmware_with-config.ino
